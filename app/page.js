@@ -98,42 +98,93 @@ export default function Home() {
     }
   }, [positions]);
 
+  // Symbol-specific drawings are restored only after symbol changes.
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(`ict_native_hlines_${selectedSymbol}`);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) setManualLines(parsed);
-      }
+      const savedLines = localStorage.getItem(`ict_native_hlines_${selectedSymbol}`);
+      const savedPositions = localStorage.getItem(`ict_native_positions_${selectedSymbol}`);
+
+      setManualLines(
+        savedLines && Array.isArray(JSON.parse(savedLines))
+          ? JSON.parse(savedLines)
+          : []
+      );
+
+      setPositions(
+        savedPositions && Array.isArray(JSON.parse(savedPositions))
+          ? JSON.parse(savedPositions)
+          : []
+      );
     } catch (err) {
-      console.warn("Could not restore H-Lines", err);
+      console.warn("Could not restore symbol drawings", err);
+      setManualLines([]);
+      setPositions([]);
     }
   }, [selectedSymbol]);
 
+  // Save H-Lines only when a symbol is active.
   useEffect(() => {
     try {
-      localStorage.setItem(`ict_native_hlines_${selectedSymbol}`, JSON.stringify(manualLines));
+      localStorage.setItem(
+        `ict_native_hlines_${selectedSymbol}`,
+        JSON.stringify(manualLines)
+      );
     } catch (err) {
       console.warn("Could not save H-Lines", err);
     }
   }, [manualLines]);
 
+  // Save positions only when they change.
   useEffect(() => {
-    fetch(DATA_URL)
+    try {
+      localStorage.setItem(
+        `ict_native_positions_${selectedSymbol}`,
+        JSON.stringify(positions)
+      );
+    } catch (err) {
+      console.warn("Could not save positions", err);
+    }
+  }, [positions]);
+
+  // Load only the selected symbol JSON.
+  useEffect(() => {
+    let cancelled = false;
+
+    setError("");
+    setData(null);
+    setPlaying(false);
+    setReplaySelectMode(false);
+    setHLineMode(false);
+    setPositionMode(null);
+    setPositionDraft(null);
+    setReplayStart(null);
+    setReplayIndex(null);
+
+    fetch(getDataUrl(selectedSymbol))
       .then((response) => {
-        if (!response.ok) throw new Error(`Could not load chart data (${response.status})`);
+        if (!response.ok) {
+          throw new Error(`Could not load ${selectedSymbol} chart data (${response.status})`);
+        }
         return response.json();
       })
       .then((json) => {
+        if (cancelled) return;
+
         if (!Array.isArray(json.candles) || json.candles.length === 0) {
-          throw new Error("No candles found in chart data");
+          throw new Error(`No candles found for ${selectedSymbol}`);
         }
+
         setData(json);
       })
       .catch((err) => {
+        if (cancelled) return;
         console.error(err);
         setError(err.message);
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedSymbol]);
 
   useEffect(() => {
