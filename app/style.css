@@ -19,10 +19,7 @@ body {
   color: #0f172a;
 }
 
-main {
-  max-width: 1100px;
-  margin: 0 auto;
-}
+main { max-width: 1100px; margin: 0 auto; }
 
 header {
   display: flex;
@@ -33,7 +30,6 @@ header {
 }
 
 h1 { margin: 0; font-size: 23px; }
-
 p { margin: 5px 0; color: #94a3b8; }
 .light p { color: #475569; }
 
@@ -66,6 +62,7 @@ button, select {
   border-color: #cbd5e1;
 }
 
+button:disabled { opacity: 0.45; }
 button:active { transform: scale(0.97); }
 
 .toggle.active, .play {
@@ -74,7 +71,7 @@ button:active { transform: scale(0.97); }
   color: white;
 }
 
-.status-card, .replay-card, .chart-card {
+.status-card, .replay-card, .chart-card, .drawing-card {
   background: #0b1729;
   border: 1px solid #1e293b;
   border-radius: 12px;
@@ -82,16 +79,51 @@ button:active { transform: scale(0.97); }
   margin-bottom: 12px;
 }
 
-.light .status-card, .light .replay-card, .light .chart-card {
+.light .status-card, .light .replay-card, .light .chart-card, .light .drawing-card {
   background: #ffffff;
   border-color: #cbd5e1;
 }
 
 .status-card { color: #facc15; }
 
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 540px;
+}
+
 .chart {
   width: 100%;
-  min-height: 540px;
+  height: 540px;
+}
+
+.overlay-svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.drawing-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.drawing-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.drawing-item.selected {
+  border-color: #facc15;
+  color: #facc15;
+}
+
+.pending-note {
+  color: #facc15;
+  font-size: 13px;
+  margin-top: 10px;
 }
 
 .replay-top {
@@ -118,37 +150,7 @@ button:active { transform: scale(0.97); }
 @media (max-width: 600px) {
   .app { padding: 10px; }
   h1 { font-size: 20px; }
-  .chart { min-height: 430px; }
+  .chart-wrap, .chart { height: 430px; }
+  .overlay-svg { height: 430px; }
   button, select { padding: 9px; font-size: 13px; }
-}
-
-
-.drawing-card {
-  background: #0b1729;
-  border: 1px solid #1e293b;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.light .drawing-card {
-  background: #ffffff;
-  border-color: #cbd5e1;
-}
-
-.drawing-title {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.drawing-list {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-.drawing-item.selected {
-  border-color: #facc15;
-  color: #facc15;
 }
