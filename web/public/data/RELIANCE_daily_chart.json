@@ -1,0 +1,11 @@
+{
+  "meta":{"symbol":"RELIANCE","exchange":"NSE","interval":"daily","candles":5,"schema_version":"1.0"},
+  "candles":[
+    {"index":0,"time":"2026-06-18T03:45:00","open":1330,"high":1333.9,"low":1322,"close":1328.1,"volume":15494549},
+    {"index":1,"time":"2026-06-19T03:45:00","open":1328,"high":1338.2,"low":1305.3,"close":1309.5,"volume":24887034},
+    {"index":2,"time":"2026-06-22T03:45:00","open":1316.7,"high":1344.9,"low":1314.1,"close":1326.5,"volume":12931213},
+    {"index":3,"time":"2026-06-23T03:45:00","open":1328.9,"high":1333,"low":1304,"close":1309.5,"volume":15400184},
+    {"index":4,"time":"2026-06-24T03:45:00","open":1305.7,"high":1322,"low":1297.5,"close":1313.6,"volume":11030917}
+  ],
+  "overlays":{"structure":[],"fvgs":[],"order_blocks":[],"cisd_levels":[],"liquidity":[],"inducements":[]}
+}
