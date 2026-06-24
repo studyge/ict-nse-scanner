@@ -177,8 +177,8 @@ export default function Home() {
             lineStyle: 0,
           },
           [
+            { time: Math.max(1, time - 1), value },
             { time, value },
-            { time: time + 1, value },
           ]
         );
       });
@@ -202,6 +202,7 @@ export default function Home() {
     }
 
     // Manual drawings.
+    try {
     drawings.forEach((drawing) => {
       if (drawing.type === "hline") {
         const first = candles[Math.max(0, Math.min(drawing.point.logical, candles.length - 1))];
@@ -274,16 +275,16 @@ export default function Home() {
         addLineSeries(
           { color, lineStyle: 0 },
           [
-            { time: leftTime, value: bottom },
-            { time: leftTime + 1, value: top },
+            { time: Math.max(1, leftTime - 1), value: bottom },
+            { time: leftTime, value: top },
           ]
         );
 
         addLineSeries(
           { color, lineStyle: 0 },
           [
-            { time: rightTime, value: bottom },
-            { time: rightTime + 1, value: top },
+            { time: Math.max(1, rightTime - 1), value: bottom },
+            { time: rightTime, value: top },
           ]
         );
 
@@ -318,6 +319,9 @@ export default function Home() {
         }
       }
     });
+    } catch (error) {
+      console.error("Overlay render error:", error);
+    }
   }
 
   useEffect(() => {
@@ -355,6 +359,7 @@ export default function Home() {
     candleSeriesRef.current = candleSeries;
 
     chart.subscribeClick((param) => {
+      try {
       const point = getChartPoint(param, chart, candleSeries);
       if (!point) return;
 
@@ -372,7 +377,7 @@ export default function Home() {
 
       if (tool === TOOLS.HLINE) {
         const drawing = {
-          id: crypto.randomUUID(),
+          id: `draw_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
           type: "hline",
           point,
         };
@@ -402,7 +407,7 @@ export default function Home() {
           return next;
         }
 
-        const id = crypto.randomUUID();
+        const id = `draw_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
         if (tool === TOOLS.TREND) {
           setDrawings((items) => [...items, { id, type: "trend", a: next[0], b: next[1] }]);
@@ -450,6 +455,14 @@ export default function Home() {
         setTool(TOOLS.CURSOR);
         return [];
       });
+    });
+
+      } catch (error) {
+        console.error("Chart tool error:", error);
+        setStatus(`Tool error: ${error.message}`);
+        setTool(TOOLS.CURSOR);
+        setToolPoints([]);
+      }
     });
 
     const resize = () => {
