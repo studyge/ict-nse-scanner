@@ -11,36 +11,42 @@ function candleTime(candle) {
   return Math.floor(new Date(candle.time).getTime() / 1000);
 }
 
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
 export default function Home() {
   const chartBox = useRef(null);
   const chartRef = useRef(null);
   const candleSeriesRef = useRef(null);
+  const markerRef = useRef(null);
 
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [replayStart, setReplayStart] = useState(0);
   const [replayIndex, setReplayIndex] = useState(0);
   const [selectedCandleIndex, setSelectedCandleIndex] = useState(null);
+  const [replaySelectMode, setReplaySelectMode] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
-  const [status, setStatus] = useState("Tap a candle to choose replay start.");
+  const [status, setStatus] = useState("Tap ✂ Bar Replay to choose a starting candle.");
 
   useEffect(() => {
     fetch(DATA_URL)
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`Could not load chart data: ${response.status}`);
+          throw new Error(`Could not load chart data (${response.status})`);
         }
         return response.json();
       })
       .then((json) => {
         if (!Array.isArray(json.candles) || json.candles.length === 0) {
-          throw new Error("No candles found in chart JSON");
+          throw new Error("No candles found in chart data");
         }
 
-        setData(json);
-
         const start = Math.min(50, json.candles.length - 1);
+
+        setData(json);
         setReplayStart(start);
         setReplayIndex(start);
       })
@@ -71,6 +77,9 @@ export default function Home() {
         borderColor: "#334155",
         timeVisible: true,
       },
+      crosshair: {
+        mode: 1,
+      },
     });
 
     const candleSeries = chart.addSeries(CandlestickSeries, {
@@ -86,24 +95,32 @@ export default function Home() {
 
     chart.subscribeClick((param) => {
       try {
-        if (!param || param.time === undefined || param.time === null) return;
+        if (!replaySelectMode) return;
+        if (!param || !param.point) return;
 
-        const clickedTime = Number(param.time);
+        const logical = chart.timeScale().coordinateToLogical(param.point.x);
 
-        const index = data.candles.findIndex((candle) => {
-          return candleTime(candle) === clickedTime;
-        });
-
-        if (index >= 0) {
-          setPlaying(false);
-          setSelectedCandleIndex(index);
-          setStatus(
-            `Selected candle #${index + 1}. Tap Start Replay From Selected.`
-          );
+        if (logical === null || !Number.isFinite(logical)) {
+          return;
         }
+
+        const index = clamp(
+          Math.round(logical),
+          0,
+          data.candles.length - 1
+        );
+
+        const candle = data.candles[index];
+
+        setPlaying(false);
+        setSelectedCandleIndex(index);
+        setReplaySelectMode(false);
+        setStatus(
+          `Selected ${new Date(candle.time).toLocaleDateString()} · Close ₹${Number(candle.close).toFixed(2)}`
+        );
       } catch (err) {
-        console.error("Candle selection error:", err);
-        setStatus("Could not select this candle. Try tapping directly on a candle body.");
+        console.error("Replay selection error:", err);
+        setStatus("Could not select candle. Tap ✂ Bar Replay and try again.");
       }
     });
 
@@ -119,13 +136,21 @@ export default function Home() {
 
     return () => {
       window.removeEventListener("resize", resize);
+
+      if (markerRef.current) {
+        try {
+          candleSeries.removePriceLine(markerRef.current);
+        } catch (_) {}
+      }
+
       chart.remove();
       chartRef.current = null;
       candleSeriesRef.current = null;
+      markerRef.current = null;
     };
-  }, [data]);
+  }, [data, replaySelectMode]);
 
-  // Initial replay data load only when replay start changes.
+  // Load replay data only when the chosen start candle changes.
   useEffect(() => {
     if (!data || !candleSeriesRef.current) return;
 
@@ -142,8 +167,7 @@ export default function Home() {
     candleSeriesRef.current.setData(initialCandles);
   }, [data, replayStart]);
 
-  // Next and Play only append/update one candle.
-  // This keeps the user's zoom and pan unchanged.
+  // Append one candle only. No full redraw, so pan/zoom remains stable.
   useEffect(() => {
     if (!data || !candleSeriesRef.current) return;
     if (replayIndex < replayStart) return;
@@ -160,6 +184,32 @@ export default function Home() {
     });
   }, [data, replayIndex, replayStart]);
 
+  // Show only one selected-candle marker.
+  useEffect(() => {
+    if (!data || !candleSeriesRef.current) return;
+
+    if (markerRef.current) {
+      try {
+        candleSeriesRef.current.removePriceLine(markerRef.current);
+      } catch (_) {}
+      markerRef.current = null;
+    }
+
+    if (selectedCandleIndex === null) return;
+
+    const candle = data.candles[selectedCandleIndex];
+    if (!candle) return;
+
+    markerRef.current = candleSeriesRef.current.createPriceLine({
+      price: Number(candle.close),
+      color: "#facc15",
+      lineWidth: 2,
+      lineStyle: 2,
+      axisLabelVisible: true,
+      title: "REPLAY",
+    });
+  }, [data, selectedCandleIndex]);
+
   useEffect(() => {
     if (!playing || !data) return;
 
@@ -171,7 +221,6 @@ export default function Home() {
           setPlaying(false);
           return current;
         }
-
         return current + 1;
       });
     }, delay);
@@ -179,13 +228,30 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [playing, speed, data]);
 
+  function toggleReplaySelection() {
+    setPlaying(false);
+
+    setReplaySelectMode((active) => {
+      const next = !active;
+
+      setStatus(
+        next
+          ? "✂ Replay selection active. Tap near any candle."
+          : "Replay selection cancelled."
+      );
+
+      return next;
+    });
+  }
+
   function startReplayFromSelected() {
     if (selectedCandleIndex === null) {
-      setStatus("Tap a candle first.");
+      setStatus("First choose a candle with ✂ Bar Replay.");
       return;
     }
 
     setPlaying(false);
+    setReplaySelectMode(false);
     setReplayStart(selectedCandleIndex);
     setReplayIndex(selectedCandleIndex);
     setStatus(`Replay started from candle #${selectedCandleIndex + 1}.`);
@@ -206,7 +272,9 @@ export default function Home() {
 
   const current = data.candles[replayIndex];
   const selected =
-    selectedCandleIndex !== null ? data.candles[selectedCandleIndex] : null;
+    selectedCandleIndex === null
+      ? null
+      : data.candles[selectedCandleIndex];
 
   return (
     <main>
@@ -226,12 +294,30 @@ export default function Home() {
         </div>
       </header>
 
+      <section className="toolbar">
+        <button
+          className={replaySelectMode ? "toggle active" : "toggle"}
+          onClick={toggleReplaySelection}
+        >
+          {replaySelectMode ? "✕ Cancel Replay" : "✂ Bar Replay"}
+        </button>
+
+        {replaySelectMode && (
+          <span className="replay-hint">
+            ✂ Tap near any candle
+          </span>
+        )}
+      </section>
+
       <section className="status-card">
         <strong>{status}</strong>
       </section>
 
       <section className="chart-card">
-        <div ref={chartBox} className="chart" />
+        <div
+          ref={chartBox}
+          className={replaySelectMode ? "chart replay-selecting" : "chart"}
+        />
       </section>
 
       <section className="replay-card">
@@ -249,7 +335,7 @@ export default function Home() {
           {selected ? (
             <>
               <span>
-                Selected candle #{selectedCandleIndex + 1} ·{" "}
+                Selected #{selectedCandleIndex + 1} ·{" "}
                 {new Date(selected.time).toLocaleDateString()} · Close ₹
                 {Number(selected.close).toFixed(2)}
               </span>
@@ -259,7 +345,7 @@ export default function Home() {
               </button>
             </>
           ) : (
-            <span>Tap directly on any candle body to select replay start.</span>
+            <span>Use ✂ Bar Replay, then tap near the candle you want.</span>
           )}
         </div>
 
@@ -310,15 +396,6 @@ export default function Home() {
             Reset
           </button>
         </div>
-      </section>
-
-      <section className="replay-card">
-        <strong>Drawing tools temporarily disabled</strong>
-        <p>
-          First we are stabilizing exact candle selection and bar replay.
-          Horizontal line, trend line, box, long and short tools will be added
-          back in one tested update after this version is working.
-        </p>
       </section>
     </main>
   );
