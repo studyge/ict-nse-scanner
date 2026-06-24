@@ -86,7 +86,23 @@ export default function Home() {
         horzLines: { color: theme.grid }
       },
       rightPriceScale: { borderColor: theme.border },
-      timeScale: { borderColor: theme.border, timeVisible: true },
+      timeScale: {
+        borderColor: theme.border,
+        timeVisible: true,
+        secondsVisible: false,
+        tickMarkFormatter: (time) => {
+          const stamp = typeof time === "number"
+            ? time * 1000
+            : Date.UTC(time.year, time.month - 1, time.day);
+
+          const date = new Date(stamp);
+
+          return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short"
+          });
+        }
+      },
       crosshair: {
         mode: 1,
         vertLine: {
@@ -202,8 +218,14 @@ export default function Home() {
   useEffect(() => {
     if (!data || !candleSeriesRef.current) return;
 
+    const initialView = replayIndex === replayStart && replayStart === Math.min(50, data.candles.length - 1);
+
+    const candlesToShow = initialView
+      ? data.candles
+      : data.candles.slice(0, replayIndex + 1);
+
     candleSeriesRef.current.setData(
-      data.candles.slice(0, replayStart + 1).map((candle) => ({
+      candlesToShow.map((candle) => ({
         time: candleTime(candle),
         open: Number(candle.open),
         high: Number(candle.high),
