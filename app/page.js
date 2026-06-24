@@ -1,7 +1,7 @@
  "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createChart, CandlestickSeries, LineStyle } from "lightweight-charts";
+import { createChart, CandlestickSeries } from "lightweight-charts";
 import "./style.css";
 
 const REPO_BASE = "/ict-nse-scanner";
@@ -138,8 +138,12 @@ export default function Home() {
   useEffect(() => {
     if (!data || !chartRef.current || !candleSeriesRef.current) return;
 
-    structureSeriesRef.current.forEach((series) => chartRef.current.removeSeries(series));
-    swingSeriesRef.current.forEach((series) => chartRef.current.removeSeries(series));
+    structureSeriesRef.current.forEach((series) => {
+      try { chartRef.current.removeSeries(series); } catch (error) {}
+    });
+    swingSeriesRef.current.forEach((series) => {
+      try { chartRef.current.removeSeries(series); } catch (error) {}
+    });
     structureSeriesRef.current = [];
     swingSeriesRef.current = [];
 
@@ -176,7 +180,7 @@ export default function Home() {
           const lineSeries = chartRef.current.addLineSeries({
             color: directionColor(event),
             lineWidth: 2,
-            lineStyle: LineStyle.Dashed,
+            lineStyle: 2,
             lastValueVisible: false,
             priceLineVisible: false,
             crosshairMarkerVisible: false,
@@ -225,8 +229,7 @@ export default function Home() {
             lineWidth: 1,
             lastValueVisible: false,
             priceLineVisible: false,
-            crosshairMarkerVisible: true,
-            crosshairMarkerRadius: 4,
+            crosshairMarkerVisible: false,
           });
 
           dotSeries.setData([
@@ -243,7 +246,9 @@ export default function Home() {
     const from = Math.max(0, replayIndex - 35);
     const to = Math.min(data.candles.length - 1, replayIndex + 10);
 
-    chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+    if (Number.isFinite(from) && Number.isFinite(to) && to > from) {
+      chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+    }
   }, [data, replayIndex, toggles]);
 
   useEffect(() => {
