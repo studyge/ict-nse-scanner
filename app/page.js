@@ -31,12 +31,23 @@ export default function Home() {
 
   useEffect(() => {
     fetch("/ict-nse-scanner/data/RELIANCE_daily_chart.json")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) {
+          throw new Error(`Chart JSON not found: ${r.status} ${r.statusText}`);
+        }
+        return r.json();
+      })
       .then((json) => {
+        if (!json.candles || !Array.isArray(json.candles)) {
+          throw new Error("Chart JSON is missing candles array");
+        }
         setData(json);
         setReplayIndex(json.candles.length - 1);
       })
-      .catch((error) => console.error("Chart data error:", error));
+      .catch((error) => {
+        console.error("Chart data error:", error);
+        setData({ error: error.message });
+      });
   }, []);
 
   useEffect(() => {
@@ -169,6 +180,16 @@ export default function Home() {
 
   if (!data) {
     return <main className="loading">Loading ICT chart data…</main>;
+  }
+
+  if (data.error) {
+    return (
+      <main className="loading">
+        <h1>Chart data could not load</h1>
+        <p>{data.error}</p>
+        <p>Expected file: /ict-nse-scanner/data/RELIANCE_daily_chart.json</p>
+      </main>
+    );
   }
 
   const current = data.candles[replayIndex];
