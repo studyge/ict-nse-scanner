@@ -17,14 +17,12 @@ function clamp(value, min, max) {
 
 const THEMES = {
   dark: {
-    page: "#07101f", card: "#0b1729", text: "#e2e8f0",
-    muted: "#94a3b8", border: "#334155", grid: "#172033",
-    up: "#22c55e", down: "#ef4444"
+    page: "#07101f", text: "#e2e8f0", border: "#334155",
+    grid: "#172033", up: "#22c55e", down: "#ef4444"
   },
   light: {
-    page: "#f1f5f9", card: "#ffffff", text: "#0f172a",
-    muted: "#475569", border: "#cbd5e1", grid: "#e2e8f0",
-    up: "#16a34a", down: "#dc2626"
+    page: "#f1f5f9", text: "#0f172a", border: "#cbd5e1",
+    grid: "#e2e8f0", up: "#16a34a", down: "#dc2626"
   }
 };
 
@@ -36,13 +34,13 @@ export default function Home() {
 
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
-  const [replayStart, setReplayStart] = useState(0);
-  const [replayIndex, setReplayIndex] = useState(0);
+  const [replayStart, setReplayStart] = useState(null);
+  const [replayIndex, setReplayIndex] = useState(null);
   const [replaySelectMode, setReplaySelectMode] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [themeName, setThemeName] = useState("dark");
-  const [status, setStatus] = useState("Use ✂ Bar Replay to choose a starting candle.");
+  const [status, setStatus] = useState("Full chart loaded. Tap ✂ Bar Replay to choose a candle.");
 
   useEffect(() => {
     replaySelectModeRef.current = replaySelectMode;
@@ -58,10 +56,7 @@ export default function Home() {
         if (!Array.isArray(json.candles) || json.candles.length === 0) {
           throw new Error("No candles found in chart data");
         }
-        const start = Math.min(50, json.candles.length - 1);
         setData(json);
-        setReplayStart(start);
-        setReplayIndex(start);
       })
       .catch((err) => {
         console.error(err);
@@ -91,16 +86,18 @@ export default function Home() {
         timeVisible: true,
         secondsVisible: false,
         tickMarkFormatter: (time) => {
-          const stamp = typeof time === "number"
-            ? time * 1000
-            : Date.UTC(time.year, time.month - 1, time.day);
+          try {
+            const stamp = typeof time === "number"
+              ? time * 1000
+              : Date.UTC(time.year, time.month - 1, time.day);
 
-          const date = new Date(stamp);
-
-          return date.toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short"
-          });
+            return new Date(stamp).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short"
+            });
+          } catch (_) {
+            return "";
+          }
         }
       },
       crosshair: {
@@ -133,6 +130,18 @@ export default function Home() {
     chartRef.current = chart;
     candleSeriesRef.current = candleSeries;
 
+    // Initial view: all available candles.
+    candleSeries.setData(
+      data.candles.map((candle) => ({
+        time: candleTime(candle),
+        open: Number(candle.open),
+        high: Number(candle.high),
+        low: Number(candle.low),
+        close: Number(candle.close)
+      }))
+    );
+    chart.timeScale().fitContent();
+
     chart.subscribeClick((param) => {
       try {
         if (!replaySelectModeRef.current || !param?.point) return;
@@ -149,11 +158,11 @@ export default function Home() {
         setReplaySelectMode(false);
 
         setStatus(
-          `Replay started: ${new Date(candle.time).toLocaleDateString()} · ₹${Number(candle.close).toFixed(2)}`
+          `Replay starts from ${new Date(candle.time).toLocaleDateString()} · ₹${Number(candle.close).toFixed(2)}`
         );
       } catch (err) {
         console.error("Replay selection error:", err);
-        setStatus("Could not select candle. Try ✂ Bar Replay again.");
+        setStatus("Could not select candle. Tap ✂ Bar Replay and try again.");
       }
     });
 
@@ -217,15 +226,11 @@ export default function Home() {
 
   useEffect(() => {
     if (!data || !candleSeriesRef.current) return;
+    if (replayStart === null || replayIndex === null) return;
 
-    const initialView = replayIndex === replayStart && replayStart === Math.min(50, data.candles.length - 1);
-
-    const candlesToShow = initialView
-      ? data.candles
-      : data.candles.slice(0, replayIndex + 1);
-
+    // Once replay is selected, only show candles up to current replay candle.
     candleSeriesRef.current.setData(
-      candlesToShow.map((candle) => ({
+      data.candles.slice(0, replayIndex + 1).map((candle) => ({
         time: candleTime(candle),
         open: Number(candle.open),
         high: Number(candle.high),
@@ -233,29 +238,14 @@ export default function Home() {
         close: Number(candle.close)
       }))
     );
-  }, [data, replayStart]);
+  }, [data, replayStart, replayIndex]);
 
   useEffect(() => {
-    if (!data || !candleSeriesRef.current || replayIndex < replayStart) return;
-
-    const candle = data.candles[replayIndex];
-    if (!candle) return;
-
-    candleSeriesRef.current.update({
-      time: candleTime(candle),
-      open: Number(candle.open),
-      high: Number(candle.high),
-      low: Number(candle.low),
-      close: Number(candle.close)
-    });
-  }, [data, replayIndex, replayStart]);
-
-  useEffect(() => {
-    if (!playing || !data) return;
+    if (!playing || !data || replayIndex === null) return;
 
     const timer = setInterval(() => {
       setReplayIndex((current) => {
-        if (current >= data.candles.length - 1) {
+        if (current === null || current >= data.candles.length - 1) {
           setPlaying(false);
           setStatus("Replay finished.");
           return current;
@@ -265,7 +255,7 @@ export default function Home() {
     }, Math.max(150, 900 / speed));
 
     return () => clearInterval(timer);
-  }, [playing, speed, data]);
+  }, [playing, speed, data, replayIndex]);
 
   function toggleReplaySelection() {
     setPlaying(false);
@@ -281,14 +271,32 @@ export default function Home() {
   }
 
   function nextCandle() {
+    if (!data) return;
+
     setPlaying(false);
+
+    if (replayIndex === null) {
+      const start = Math.min(50, data.candles.length - 1);
+      setReplayStart(start);
+      setReplayIndex(start);
+      setStatus("Replay started from candle 51. Use ✂ Bar Replay for another candle.");
+      return;
+    }
+
     setReplayIndex((current) => Math.min(data.candles.length - 1, current + 1));
   }
 
   function resetReplay() {
     setPlaying(false);
+
+    if (replayStart === null) {
+      if (chartRef.current) chartRef.current.timeScale().fitContent();
+      setStatus("Full chart restored. Choose a candle with ✂ Bar Replay.");
+      return;
+    }
+
     setReplayIndex(replayStart);
-    setStatus(`Reset to replay start candle #${replayStart + 1}.`);
+    setStatus(`Reset to selected replay candle #${replayStart + 1}.`);
   }
 
   if (error) {
@@ -299,7 +307,8 @@ export default function Home() {
     return <main className="loading">Loading ICT chart data…</main>;
   }
 
-  const current = data.candles[replayIndex];
+  const currentIndex = replayIndex === null ? data.candles.length - 1 : replayIndex;
+  const current = data.candles[currentIndex];
 
   return (
     <main className={themeName === "light" ? "app light" : "app"}>
@@ -308,6 +317,7 @@ export default function Home() {
           <h1>ICT NSE Chart</h1>
           <p>{data.meta?.exchange || "NSE"}:{data.meta?.symbol || "RELIANCE"} · {data.meta?.interval || "daily"}</p>
         </div>
+
         <div className="price">
           <strong>₹ {Number(current.close).toFixed(2)}</strong>
           <small>{new Date(current.time).toLocaleDateString()}</small>
@@ -330,7 +340,11 @@ export default function Home() {
 
       <section className="replay-card">
         <div className="replay-top">
-          <span>Replay: {replayIndex + 1} / {data.candles.length}</span>
+          <span>
+            {replayIndex === null
+              ? `Full chart: ${data.candles.length} candles`
+              : `Replay: ${replayIndex + 1} / ${data.candles.length}`}
+          </span>
           <span>O {current.open} · H {current.high} · L {current.low} · C {current.close}</span>
         </div>
 
@@ -342,7 +356,16 @@ export default function Home() {
             {replaySelectMode ? "✕ Cancel Replay" : "✂ Bar Replay"}
           </button>
 
-          <button className="play" onClick={() => setPlaying((value) => !value)}>
+          <button
+            className="play"
+            onClick={() => {
+              if (replayIndex === null) {
+                nextCandle();
+                return;
+              }
+              setPlaying((value) => !value);
+            }}
+          >
             {playing ? "Pause" : "▶ Play"}
           </button>
 
