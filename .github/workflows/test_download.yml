@@ -1,0 +1,35 @@
+name: Test NSE Candle Download
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-reliance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scanner/requirements.txt
+
+      - name: Download RELIANCE daily candles
+        run: |
+          python scanner/main.py
+
+      - name: Upload candle file
+        uses: actions/upload-artifact@v4
+        with:
+          name: reliance-daily-candles
+          path: data/raw/RELIANCE_daily_50.csv
+          if-no-files-found: error
+          retention-days: 7
