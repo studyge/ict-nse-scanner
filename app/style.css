@@ -1,7 +1,5 @@
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -34,47 +32,25 @@ header {
   margin-bottom: 12px;
 }
 
-h1 {
-  margin: 0;
-  font-size: 23px;
-}
+h1 { margin: 0; font-size: 23px; }
 
-p {
-  margin: 5px 0;
-  color: #94a3b8;
-}
+p { margin: 5px 0; color: #94a3b8; }
+.light p { color: #475569; }
 
-.light p {
-  color: #475569;
-}
+.price { text-align: right; }
+.price strong { display: block; font-size: 20px; }
+.price small { color: #94a3b8; }
 
-.price {
-  text-align: right;
-}
-
-.price strong {
-  display: block;
-  font-size: 20px;
-}
-
-.price small {
-  color: #94a3b8;
-}
-
-.toolbar,
-.controls {
+.toolbar, .controls {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.toolbar {
-  margin-bottom: 10px;
-}
+.toolbar { margin-bottom: 10px; }
 
-button,
-select {
+button, select {
   border: 1px solid #334155;
   background: #111c30;
   color: #e2e8f0;
@@ -84,33 +60,21 @@ select {
   touch-action: manipulation;
 }
 
-.light button,
-.light select {
+.light button, .light select {
   background: #ffffff;
   color: #0f172a;
   border-color: #cbd5e1;
 }
 
-button:active {
-  transform: scale(0.97);
-}
+button:active { transform: scale(0.97); }
 
-.toggle.active,
-.play {
+.toggle.active, .play {
   background: #0f766e;
   border-color: #14b8a6;
   color: white;
 }
 
-.replay-hint {
-  color: #facc15;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.status-card,
-.replay-card,
-.chart-card {
+.status-card, .replay-card, .chart-card {
   background: #0b1729;
   border: 1px solid #1e293b;
   border-radius: 12px;
@@ -118,26 +82,16 @@ button:active {
   margin-bottom: 12px;
 }
 
-.light .status-card,
-.light .replay-card,
-.light .chart-card {
+.light .status-card, .light .replay-card, .light .chart-card {
   background: #ffffff;
   border-color: #cbd5e1;
 }
 
-.status-card {
-  color: #facc15;
-}
+.status-card { color: #facc15; }
 
 .chart {
   width: 100%;
   min-height: 540px;
-}
-
-.chart.replay-selecting {
-  outline: 2px dashed #facc15;
-  outline-offset: 4px;
-  cursor: crosshair;
 }
 
 .replay-top {
@@ -149,9 +103,7 @@ button:active {
   color: #cbd5e1;
 }
 
-.light .replay-top {
-  color: #334155;
-}
+.light .replay-top { color: #334155; }
 
 .loading {
   min-height: 100vh;
@@ -164,21 +116,8 @@ button:active {
 }
 
 @media (max-width: 600px) {
-  .app {
-    padding: 10px;
-  }
-
-  h1 {
-    font-size: 20px;
-  }
-
-  .chart {
-    min-height: 430px;
-  }
-
-  button,
-  select {
-    padding: 9px;
-    font-size: 13px;
-  }
+  .app { padding: 10px; }
+  h1 { font-size: 20px; }
+  .chart { min-height: 430px; }
+  button, select { padding: 9px; font-size: 13px; }
 }
