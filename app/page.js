@@ -30,7 +30,7 @@ export default function Home() {
   const [toggles, setToggles] = useState(defaultToggles);
 
   useEffect(() => {
-    fetch("/data/RELIANCE_daily_chart.json")
+    fetch("/ict-nse-scanner/data/RELIANCE_daily_chart.json")
       .then((r) => r.json())
       .then((json) => {
         setData(json);
