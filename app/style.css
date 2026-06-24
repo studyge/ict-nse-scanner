@@ -251,3 +251,28 @@ button:active { transform: scale(0.97); }
     grid-template-columns: 1fr;
   }
 }
+
+
+.symbol-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.symbol-picker select {
+  border: 1px solid #475569;
+  border-radius: 8px;
+  padding: 7px 9px;
+  background: #020617;
+  color: #e2e8f0;
+  font-size: 13px;
+}
+
+.light .symbol-picker select {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #94a3b8;
+}

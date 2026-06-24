@@ -5,7 +5,21 @@ import { createChart, CandlestickSeries } from "lightweight-charts";
 import "./style.css";
 
 const BASE_PATH = "/ict-nse-scanner";
-const DATA_URL = `${BASE_PATH}/data/RELIANCE_daily_chart.json`;
+
+const SYMBOLS = [
+  { symbol: "RELIANCE", label: "RELIANCE", file: "NSE_RELIANCE_1D.json" },
+  { symbol: "TCS", label: "TCS", file: "NSE_TCS_1D.json" },
+  { symbol: "HDFCBANK", label: "HDFCBANK", file: "NSE_HDFCBANK_1D.json" },
+  { symbol: "INFY", label: "INFY", file: "NSE_INFY_1D.json" },
+  { symbol: "ICICIBANK", label: "ICICIBANK", file: "NSE_ICICIBANK_1D.json" },
+  { symbol: "SBIN", label: "SBIN", file: "NSE_SBIN_1D.json" },
+  { symbol: "LT", label: "LT", file: "NSE_LT_1D.json" }
+];
+
+function getDataUrl(symbol) {
+  const item = SYMBOLS.find((x) => x.symbol === symbol) || SYMBOLS[0];
+  return `${BASE_PATH}/data/${item.file}`;
+}
 
 function candleTime(candle) {
   return Math.floor(new Date(candle.time).getTime() / 1000);
@@ -36,6 +50,7 @@ export default function Home() {
   const positionModeRef = useRef(null);
   const positionPriceLinesRef = useRef([]);
 
+  const [selectedSymbol, setSelectedSymbol] = useState("RELIANCE");
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [replayStart, setReplayStart] = useState(null);
@@ -65,7 +80,7 @@ export default function Home() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("ict_native_positions");
+      const saved = localStorage.getItem(`ict_native_positions_${selectedSymbol}`);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) setPositions(parsed);
@@ -73,11 +88,11 @@ export default function Home() {
     } catch (err) {
       console.warn("Could not restore positions", err);
     }
-  }, []);
+  }, [selectedSymbol]);
 
   useEffect(() => {
     try {
-      localStorage.setItem("ict_native_positions", JSON.stringify(positions));
+      localStorage.setItem(`ict_native_positions_${selectedSymbol}`, JSON.stringify(positions));
     } catch (err) {
       console.warn("Could not save positions", err);
     }
@@ -85,7 +100,7 @@ export default function Home() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("ict_native_hlines");
+      const saved = localStorage.getItem(`ict_native_hlines_${selectedSymbol}`);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) setManualLines(parsed);
@@ -93,11 +108,11 @@ export default function Home() {
     } catch (err) {
       console.warn("Could not restore H-Lines", err);
     }
-  }, []);
+  }, [selectedSymbol]);
 
   useEffect(() => {
     try {
-      localStorage.setItem("ict_native_hlines", JSON.stringify(manualLines));
+      localStorage.setItem(`ict_native_hlines_${selectedSymbol}`, JSON.stringify(manualLines));
     } catch (err) {
       console.warn("Could not save H-Lines", err);
     }
@@ -119,7 +134,7 @@ export default function Home() {
         console.error(err);
         setError(err.message);
       });
-  }, []);
+  }, [selectedSymbol]);
 
   useEffect(() => {
     if (!data || !chartBox.current) return;
@@ -576,7 +591,21 @@ export default function Home() {
       <header>
         <div>
           <h1>ICT NSE Chart</h1>
-          <p>{data.meta?.exchange || "NSE"}:{data.meta?.symbol || "RELIANCE"} · {data.meta?.interval || "daily"}</p>
+          <p>{data.meta?.exchange || "NSE"}:{data.meta?.symbol || selectedSymbol} · {data.meta?.interval || "1D"}</p>
+
+          <label className="symbol-picker">
+            <span>Symbol</span>
+            <select
+              value={selectedSymbol}
+              onChange={(event) => setSelectedSymbol(event.target.value)}
+            >
+              {SYMBOLS.map((item) => (
+                <option key={item.symbol} value={item.symbol}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         <div className="price">
