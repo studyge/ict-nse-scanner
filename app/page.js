@@ -20,6 +20,7 @@ export default function Home() {
   const chartRef = useRef(null);
   const candleSeriesRef = useRef(null);
   const markerRef = useRef(null);
+  const replaySelectModeRef = useRef(false);
 
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
@@ -30,6 +31,10 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [status, setStatus] = useState("Tap ✂ Bar Replay to choose a starting candle.");
+
+  useEffect(() => {
+    replaySelectModeRef.current = replaySelectMode;
+  }, [replaySelectMode]);
 
   useEffect(() => {
     fetch(DATA_URL)
@@ -95,7 +100,7 @@ export default function Home() {
 
     chart.subscribeClick((param) => {
       try {
-        if (!replaySelectMode) return;
+        if (!replaySelectModeRef.current) return;
         if (!param || !param.point) return;
 
         const logical = chart.timeScale().coordinateToLogical(param.point.x);
@@ -148,7 +153,7 @@ export default function Home() {
       candleSeriesRef.current = null;
       markerRef.current = null;
     };
-  }, [data, replaySelectMode]);
+  }, [data]);
 
   // Load replay data only when the chosen start candle changes.
   useEffect(() => {
