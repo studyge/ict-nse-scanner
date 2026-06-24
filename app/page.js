@@ -1,87 +1,123 @@
-"use client";
+ "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createChart, CandlestickSeries } from "lightweight-charts";
+import { createChart, CandlestickSeries, LineStyle } from "lightweight-charts";
 import "./style.css";
+
+const REPO_BASE = "/ict-nse-scanner";
+const DATA_URL = `${REPO_BASE}/data/RELIANCE_daily_chart.json`;
 
 const defaultToggles = {
   structure: true,
+  swings: true,
   fvgs: true,
   orderBlocks: true,
-  cisd: true,
-  liquidity: true,
-  inducements: true
+  cisd: false,
+  liquidity: false,
+  inducements: false,
 };
 
-function lineColor(item) {
-  if (item.direction === "bullish") return "#14b8a6";
-  if (item.direction === "bearish") return "#ef4444";
-  return "#f59e0b";
+function directionColor(item) {
+  return item.direction === "bullish" ? "#14b8a6" : "#ef4444";
+}
+
+function safeArray(value) {
+  return Array.isArray(value) ? value : [];
 }
 
 export default function Home() {
   const chartBox = useRef(null);
   const chartRef = useRef(null);
   const candleSeriesRef = useRef(null);
+  const structureSeriesRef = useRef([]);
+  const swingSeriesRef = useRef([]);
+
   const [data, setData] = useState(null);
+  const [loadError, setLoadError] = useState("");
+  const [replayStart, setReplayStart] = useState(0);
   const [replayIndex, setReplayIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(null);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [toggles, setToggles] = useState(defaultToggles);
 
   useEffect(() => {
-    fetch("./data/RELIANCE_daily_chart.json")
-      .then((r) => {
-        if (!r.ok) {
-          throw new Error(`Chart JSON not found: ${r.status} ${r.statusText}`);
+    fetch(DATA_URL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Could not load chart data (${response.status})`);
         }
-        return r.json();
+        return response.json();
       })
       .then((json) => {
-        if (!json.candles || !Array.isArray(json.candles)) {
-          throw new Error("Chart JSON is missing candles array");
+        if (!Array.isArray(json.candles) || json.candles.length === 0) {
+          throw new Error("Chart JSON has no candles");
         }
+
+        json.overlays = json.overlays || {};
         setData(json);
-        setReplayIndex(json.candles.length - 1);
+
+        const defaultStart = Math.min(50, json.candles.length - 1);
+        setReplayStart(defaultStart);
+        setReplayIndex(defaultStart);
       })
       .catch((error) => {
-        console.error("Chart data error:", error);
-        setData({ error: error.message });
+        console.error(error);
+        setLoadError(error.message);
       });
   }, []);
 
   useEffect(() => {
     if (!data || !chartBox.current) return;
 
-    if (chartRef.current) {
-      chartRef.current.remove();
-    }
-
     const chart = createChart(chartBox.current, {
       width: chartBox.current.clientWidth,
-      height: 500,
+      height: 520,
       layout: {
         background: { color: "#0b1220" },
-        textColor: "#cbd5e1"
+        textColor: "#cbd5e1",
       },
       grid: {
         vertLines: { color: "#172033" },
-        horzLines: { color: "#172033" }
+        horzLines: { color: "#172033" },
       },
-      rightPriceScale: { borderColor: "#334155" },
-      timeScale: { borderColor: "#334155", timeVisible: true }
+      rightPriceScale: {
+        borderColor: "#334155",
+      },
+      timeScale: {
+        borderColor: "#334155",
+        timeVisible: true,
+      },
+      crosshair: {
+        mode: 0,
+      },
     });
 
-    const series = chart.addSeries(CandlestickSeries, {
+    const candles = chart.addSeries(CandlestickSeries, {
       upColor: "#22c55e",
       downColor: "#ef4444",
       borderVisible: false,
       wickUpColor: "#22c55e",
-      wickDownColor: "#ef4444"
+      wickDownColor: "#ef4444",
     });
 
     chartRef.current = chart;
-    candleSeriesRef.current = series;
+    candleSeriesRef.current = candles;
+
+    chart.subscribeClick((param) => {
+      if (!param || !param.time) return;
+
+      const clickedTime = Number(param.time);
+      const index = data.candles.findIndex((candle) => {
+        const candleTime = Math.floor(new Date(candle.time).getTime() / 1000);
+        return candleTime === clickedTime;
+      });
+
+      if (index >= 0) {
+        setSelectedIndex(index);
+        setPlaying(false);
+      }
+    });
 
     const resize = () => {
       if (chartBox.current) {
@@ -90,81 +126,131 @@ export default function Home() {
     };
 
     window.addEventListener("resize", resize);
+
     return () => {
       window.removeEventListener("resize", resize);
       chart.remove();
+      chartRef.current = null;
+      candleSeriesRef.current = null;
     };
   }, [data]);
 
   useEffect(() => {
-    if (!data || !candleSeriesRef.current || !chartRef.current) return;
+    if (!data || !chartRef.current || !candleSeriesRef.current) return;
 
-    const visibleCandles = data.candles.slice(0, replayIndex + 1).map((c) => ({
-      time: Math.floor(new Date(c.time).getTime() / 1000),
-      open: c.open,
-      high: c.high,
-      low: c.low,
-      close: c.close
-    }));
+    structureSeriesRef.current.forEach((series) => chartRef.current.removeSeries(series));
+    swingSeriesRef.current.forEach((series) => chartRef.current.removeSeries(series));
+    structureSeriesRef.current = [];
+    swingSeriesRef.current = [];
+
+    const visibleCandles = data.candles
+      .slice(0, replayIndex + 1)
+      .map((candle) => ({
+        time: Math.floor(new Date(candle.time).getTime() / 1000),
+        open: Number(candle.open),
+        high: Number(candle.high),
+        low: Number(candle.low),
+        close: Number(candle.close),
+      }));
 
     candleSeriesRef.current.setData(visibleCandles);
 
-    // Remove old overlay price lines by rebuilding only visible active levels.
-    // Lightweight Charts price lines are used in v1; rectangles come in Phase 8.
-    const overlays = data.overlays;
+    const overlays = data.overlays || {};
+    const structure = safeArray(overlays.structure);
 
+    /*
+      Short structure segments:
+      start = swing candle / previous relevant swing
+      end = candle where BOS or CHoCH is confirmed
+      No full-chart horizontal scanner lines.
+    */
     if (toggles.structure) {
-      overlays.structure
-        .filter((x) => x.bar_index <= replayIndex)
-        .forEach((x) => {
-          candleSeriesRef.current.createPriceLine({
-            price: x.level,
-            color: lineColor(x),
-            lineWidth: 1,
-            lineStyle: 2,
-            axisLabelVisible: true,
-            title: x.type
+      structure
+        .filter((event) => Number(event.bar_index) <= replayIndex)
+        .forEach((event) => {
+          const endIndex = Number(event.bar_index);
+          const startIndex = Math.max(0, Number(event.swing_bar_index ?? event.start_bar_index ?? endIndex - 8));
+
+          if (!data.candles[startIndex] || !data.candles[endIndex]) return;
+
+          const lineSeries = chartRef.current.addLineSeries({
+            color: directionColor(event),
+            lineWidth: 2,
+            lineStyle: LineStyle.Dashed,
+            lastValueVisible: false,
+            priceLineVisible: false,
+            crosshairMarkerVisible: false,
           });
+
+          lineSeries.setData([
+            {
+              time: Math.floor(new Date(data.candles[startIndex].time).getTime() / 1000),
+              value: Number(event.level),
+            },
+            {
+              time: Math.floor(new Date(data.candles[endIndex].time).getTime() / 1000),
+              value: Number(event.level),
+            },
+          ]);
+
+          structureSeriesRef.current.push(lineSeries);
         });
     }
 
-    if (toggles.cisd) {
-      overlays.cisd_levels
-        .filter((x) => x.start_bar_index <= replayIndex && x.status === "active")
-        .forEach((x) => {
-          candleSeriesRef.current.createPriceLine({
-            price: x.level,
-            color: "#eab308",
+    /*
+      Swing dots:
+      Uses structure event start point when the engine does not export
+      a separate swing list yet.
+    */
+    if (toggles.swings) {
+      const used = new Set();
+
+      structure
+        .filter((event) => Number(event.bar_index) <= replayIndex)
+        .forEach((event) => {
+          const swingIndex = Math.max(
+            0,
+            Number(event.swing_bar_index ?? event.start_bar_index ?? Number(event.bar_index) - 8)
+          );
+
+          const key = `${swingIndex}-${event.direction}`;
+          if (used.has(key) || !data.candles[swingIndex]) return;
+          used.add(key);
+
+          const candle = data.candles[swingIndex];
+          const isBullish = event.direction === "bullish";
+
+          const dotSeries = chartRef.current.addLineSeries({
+            color: isBullish ? "#14b8a6" : "#ef4444",
             lineWidth: 1,
-            lineStyle: 1,
-            axisLabelVisible: false,
-            title: "CISD"
+            lastValueVisible: false,
+            priceLineVisible: false,
+            crosshairMarkerVisible: true,
+            crosshairMarkerRadius: 4,
           });
+
+          dotSeries.setData([
+            {
+              time: Math.floor(new Date(candle.time).getTime() / 1000),
+              value: isBullish ? Number(candle.low) : Number(candle.high),
+            },
+          ]);
+
+          swingSeriesRef.current.push(dotSeries);
         });
     }
 
-    if (toggles.liquidity) {
-      overlays.liquidity
-        .filter((x) => x.start_bar_index <= replayIndex && x.status === "active")
-        .forEach((x) => {
-          candleSeriesRef.current.createPriceLine({
-            price: x.level,
-            color: "#f97316",
-            lineWidth: 1,
-            lineStyle: 2,
-            axisLabelVisible: false,
-            title: x.side === "buyside" ? "BSL" : "SSL"
-          });
-        });
-    }
+    const from = Math.max(0, replayIndex - 35);
+    const to = Math.min(data.candles.length - 1, replayIndex + 10);
 
-    chartRef.current.timeScale().fitContent();
+    chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
   }, [data, replayIndex, toggles]);
 
   useEffect(() => {
     if (!playing || !data) return;
 
-    const delay = Math.max(120, 800 / speed);
+    const delay = Math.max(120, 850 / speed);
+
     const timer = setInterval(() => {
       setReplayIndex((current) => {
         if (current >= data.candles.length - 1) {
@@ -178,54 +264,62 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [playing, speed, data]);
 
-  if (!data) {
-    return <main className="loading">Loading ICT chart data…</main>;
+  function startReplayFromSelected() {
+    if (selectedIndex === null) return;
+    setPlaying(false);
+    setReplayStart(selectedIndex);
+    setReplayIndex(selectedIndex);
   }
 
-  if (data.error) {
+  function resetReplay() {
+    setPlaying(false);
+    setReplayIndex(replayStart);
+  }
+
+  if (loadError) {
     return (
       <main className="loading">
-        <h1>Chart data could not load</h1>
-        <p>{data.error}</p>
-        <p>Expected file: /ict-nse-scanner/data/RELIANCE_daily_chart.json</p>
+        <h1>Chart data error</h1>
+        <p>{loadError}</p>
+        <p>Expected data file: {DATA_URL}</p>
       </main>
     );
   }
 
+  if (!data) {
+    return <main className="loading">Loading ICT chart data…</main>;
+  }
+
   const current = data.candles[replayIndex];
-  const overlays = data.overlays;
-
-  const visibleFvgs = overlays.fvgs.filter(
-    (x) => x.start_bar_index <= replayIndex &&
-      (x.status === "active" || x.end_bar_index >= replayIndex)
-  );
-
-  const visibleObs = overlays.order_blocks.filter(
-    (x) => x.start_bar_index <= replayIndex
-  );
+  const selected = selectedIndex !== null ? data.candles[selectedIndex] : null;
 
   return (
     <main>
       <header>
         <div>
           <h1>ICT NSE Chart</h1>
-          <p>{data.meta.exchange}:{data.meta.symbol} · {data.meta.interval}</p>
+          <p>
+            {data.meta?.exchange || "NSE"}:{data.meta?.symbol || "RELIANCE"} ·{" "}
+            {data.meta?.interval || "daily"}
+          </p>
         </div>
+
         <div className="price">
-          <strong>₹ {current.close.toFixed(2)}</strong>
+          <strong>₹ {Number(current.close).toFixed(2)}</strong>
           <small>{new Date(current.time).toLocaleDateString()}</small>
         </div>
       </header>
 
       <section className="toolbar">
-        {Object.entries({
-          structure: "BOS / CHoCH",
-          fvgs: `FVG (${visibleFvgs.length})`,
-          orderBlocks: `OB (${visibleObs.length})`,
-          cisd: "CISD",
-          liquidity: "Liquidity",
-          inducements: "IDM"
-        }).map(([key, label]) => (
+        {[
+          ["structure", "BOS / CHoCH"],
+          ["swings", "Swing dots"],
+          ["fvgs", "FVG"],
+          ["orderBlocks", "OB"],
+          ["cisd", "CISD"],
+          ["liquidity", "Liquidity"],
+          ["inducements", "IDM"],
+        ].map(([key, label]) => (
           <button
             key={key}
             className={toggles[key] ? "toggle active" : "toggle"}
@@ -242,8 +336,28 @@ export default function Home() {
 
       <section className="replay-card">
         <div className="replay-top">
-          <span>Bar Replay: {replayIndex + 1} / {data.candles.length}</span>
-          <span>O {current.open} · H {current.high} · L {current.low} · C {current.close}</span>
+          <span>
+            Replay candle: {replayIndex + 1} / {data.candles.length}
+          </span>
+          <span>
+            O {current.open} · H {current.high} · L {current.low} · C {current.close}
+          </span>
+        </div>
+
+        <div className="selected-candle">
+          {selected ? (
+            <>
+              <span>
+                Selected candle: #{selectedIndex + 1} ·{" "}
+                {new Date(selected.time).toLocaleDateString()}
+              </span>
+              <button className="play" onClick={startReplayFromSelected}>
+                Start Replay Here
+              </button>
+            </>
+          ) : (
+            <span>Tap any candle on the chart, then choose “Start Replay Here”.</span>
+          )}
         </div>
 
         <input
@@ -251,59 +365,43 @@ export default function Home() {
           min="0"
           max={data.candles.length - 1}
           value={replayIndex}
-          onChange={(e) => {
+          onChange={(event) => {
             setPlaying(false);
-            setReplayIndex(Number(e.target.value));
+            setReplayIndex(Number(event.target.value));
           }}
         />
 
         <div className="controls">
-          <button onClick={() => { setPlaying(false); setReplayIndex(Math.max(0, replayIndex - 1)); }}>◀ Prev</button>
-          <button className="play" onClick={() => setPlaying((x) => !x)}>
+          <button
+            onClick={() => {
+              setPlaying(false);
+              setReplayIndex(Math.max(replayStart, replayIndex - 1));
+            }}
+          >
+            ◀ Prev
+          </button>
+
+          <button className="play" onClick={() => setPlaying((value) => !value)}>
             {playing ? "Pause" : "▶ Play"}
           </button>
-          <button onClick={() => { setPlaying(false); setReplayIndex(Math.min(data.candles.length - 1, replayIndex + 1)); }}>Next ▶</button>
 
-          <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))}>
+          <button
+            onClick={() => {
+              setPlaying(false);
+              setReplayIndex(Math.min(data.candles.length - 1, replayIndex + 1));
+            }}
+          >
+            Next ▶
+          </button>
+
+          <select value={speed} onChange={(event) => setSpeed(Number(event.target.value))}>
             <option value="1">1x speed</option>
             <option value="2">2x speed</option>
             <option value="5">5x speed</option>
           </select>
 
-          <button onClick={() => { setPlaying(false); setReplayIndex(0); }}>Reset</button>
+          <button onClick={resetReplay}>Reset to start candle</button>
         </div>
-      </section>
-
-      <section className="zones">
-        {toggles.orderBlocks && (
-          <div className="zone-list">
-            <h2>Order Blocks</h2>
-            {visibleObs.length === 0 ? <p>No OB created yet at this replay candle.</p> :
-              visibleObs.map((x) => (
-                <div key={x.id} className={`zone ${x.direction} ${x.status}`}>
-                  <b>{x.direction.toUpperCase()} OB</b>
-                  <span>₹ {x.bottom.toFixed(2)} — ₹ {x.top.toFixed(2)}</span>
-                  <small>{x.status} · {x.zone_mode}</small>
-                </div>
-              ))
-            }
-          </div>
-        )}
-
-        {toggles.fvgs && (
-          <div className="zone-list">
-            <h2>Fair Value Gaps</h2>
-            {visibleFvgs.length === 0 ? <p>No visible FVG at this candle.</p> :
-              visibleFvgs.slice(-8).map((x) => (
-                <div key={x.id} className={`zone ${x.direction}`}>
-                  <b>{x.direction.toUpperCase()} FVG</b>
-                  <span>₹ {x.bottom.toFixed(2)} — ₹ {x.top.toFixed(2)}</span>
-                  <small>{x.status}</small>
-                </div>
-              ))
-            }
-          </div>
-        )}
       </section>
     </main>
   );
