@@ -1,28 +1,33 @@
 from pathlib import Path
-import json
-import pandas as pd
 
-from engine.structure import detect_market_structure, events_to_records
+from data_sources.tvdatafeed_source import CandleRequest, fetch_candles
 
 ROOT = Path(__file__).resolve().parent.parent
-RAW_FILE = ROOT / "data" / "raw" / "RELIANCE_daily_50.csv"
-OUTPUT_DIR = ROOT / "data" / "processed"
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+RAW_DIR = ROOT / "data" / "raw"
+RAW_DIR.mkdir(parents=True, exist_ok=True)
 
-candles = pd.read_csv(RAW_FILE)
+request = CandleRequest(
+    symbol="RELIANCE",
+    exchange="NSE",
+    interval="daily",
+    n_bars=50,
+)
 
-events = detect_market_structure(candles, swing_length=7, min_gap=10)
+print("=" * 55)
+print("ICT NSE SCANNER — PHASE 1 TEST")
+print("=" * 55)
+print(
+    f"Downloading {request.n_bars} {request.interval} candles "
+    f"for {request.exchange}:{request.symbol}"
+)
 
-output_file = OUTPUT_DIR / "RELIANCE_daily_structure.json"
-output_file.write_text(json.dumps(events_to_records(events), indent=2))
+candles = fetch_candles(request)
 
-print(f"Candles loaded: {len(candles)}")
-print(f"Structure events found: {len(events)}")
+output_file = RAW_DIR / "RELIANCE_daily_50.csv"
+candles.to_csv(output_file, index=False)
 
-for event in events:
-    print(
-        f"{event.time} | {event.event_type} | {event.direction} | "
-        f"level={event.level}"
-    )
-
-print(f"Saved: {output_file}")
+print(f"✓ Candles downloaded: {len(candles)}")
+print()
+print(candles.tail(5).to_string(index=False))
+print()
+print(f"✓ Saved: {output_file}")
