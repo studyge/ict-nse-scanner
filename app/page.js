@@ -203,57 +203,6 @@ export default function Home() {
       try {
         if (!param?.point) return;
 
-        // Long / Short position tool gets first priority.
-        if (positionModeRef.current) {
-          const price = candleSeries.coordinateToPrice(param.point.y);
-          if (price === null || !Number.isFinite(price)) return;
-
-          const selectedPrice = Number(price.toFixed(2));
-          const mode = positionModeRef.current;
-
-          setPositionDraft((oldDraft) => {
-            const draft = oldDraft && oldDraft.side === mode
-              ? oldDraft
-              : { side: mode, entry: null, stop: null, target: null };
-
-            if (draft.entry === null) {
-              setStatus(`${mode === "long" ? "Long" : "Short"}: now tap Stop Loss.`);
-              return { ...draft, entry: selectedPrice };
-            }
-
-            if (draft.stop === null) {
-              setStatus(`${mode === "long" ? "Long" : "Short"}: now tap Target.`);
-              return { ...draft, stop: selectedPrice };
-            }
-
-            const complete = {
-              id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-              side: mode,
-              entry: Number(draft.entry),
-              stop: Number(draft.stop),
-              target: selectedPrice
-            };
-
-            const risk = Math.abs(complete.entry - complete.stop);
-            const reward = Math.abs(complete.target - complete.entry);
-
-            if (risk <= 0) {
-              setStatus("Invalid position: Entry and Stop Loss cannot be the same.");
-              return { side: mode, entry: null, stop: null, target: null };
-            }
-
-            setPositions((old) => [...old, complete]);
-            setPositionMode(null);
-            setStatus(
-              `${mode === "long" ? "Long" : "Short"} position added · RR ${(reward / risk).toFixed(2)}`
-            );
-
-            return null;
-          });
-
-          return;
-        }
-
         // H-Line tool gets first priority.
         if (hLineModeRef.current) {
           const price = candleSeries.coordinateToPrice(param.point.y);
@@ -472,18 +421,63 @@ export default function Home() {
   }
 
   function startPosition(side) {
+    if (!data) return;
+
     setPlaying(false);
     setReplaySelectMode(false);
     setHLineMode(false);
-    setPositionDraft({ side, entry: null, stop: null, target: null });
-    setPositionMode(side);
-    setStatus(`${side === "long" ? "Long" : "Short"} tool active. Tap Entry price.`);
+
+    const activeIndex = replayIndex === null
+      ? data.candles.length - 1
+      : replayIndex;
+
+    const close = Number(data.candles[activeIndex]?.close || 0);
+    if (!Number.isFinite(close) || close <= 0) {
+      setStatus("Could not create position from current price.");
+      return;
+    }
+
+    const gap = Math.max(close * 0.01, 1);
+
+    const position = side === "long"
+      ? {
+          id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          side: "long",
+          entry: Number(close.toFixed(2)),
+          stop: Number((close - gap).toFixed(2)),
+          target: Number((close + gap * 2).toFixed(2))
+        }
+      : {
+          id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          side: "short",
+          entry: Number(close.toFixed(2)),
+          stop: Number((close + gap).toFixed(2)),
+          target: Number((close - gap * 2).toFixed(2))
+        };
+
+    setPositions((old) => [...old, position]);
+    setPositionMode(null);
+    setPositionDraft(null);
+    setStatus(`${side === "long" ? "Long" : "Short"} position created. Edit its prices below.`);
   }
 
   function cancelPosition() {
     setPositionMode(null);
     setPositionDraft(null);
     setStatus("Position tool cancelled.");
+  }
+
+  function updatePosition(id, field, rawValue) {
+    const value = Number(rawValue);
+    if (!Number.isFinite(value) || value <= 0) return;
+
+    setPositions((old) =>
+      old.map((position) =>
+        position.id === id
+          ? { ...position, [field]: Number(value.toFixed(2)) }
+          : position
+      )
+    );
   }
 
   function deletePosition(id) {
@@ -621,17 +615,17 @@ export default function Home() {
           </button>
 
           <button
-            className={positionMode === "long" ? "toggle active long-tool" : "toggle long-tool"}
-            onClick={() => positionMode === "long" ? cancelPosition() : startPosition("long")}
+            className="toggle long-tool"
+            onClick={() => startPosition("long")}
           >
-            {positionMode === "long" ? "✕ Cancel Long" : "↗ Long"}
+            ↗ Long
           </button>
 
           <button
-            className={positionMode === "short" ? "toggle active short-tool" : "toggle short-tool"}
-            onClick={() => positionMode === "short" ? cancelPosition() : startPosition("short")}
+            className="toggle short-tool"
+            onClick={() => startPosition("short")}
           >
-            {positionMode === "short" ? "✕ Cancel Short" : "↘ Short"}
+            ↘ Short
           </button>
 
           <button onClick={clearPositions} disabled={positions.length === 0}>
@@ -653,34 +647,60 @@ export default function Home() {
           </div>
         )}
 
-        {positionMode && positionDraft && (
-          <p className="position-hint">
-            {positionMode === "long" ? "↗ Long" : "↘ Short"}:
-            {" "}Entry {positionDraft.entry ?? "—"} ·
-            {" "}SL {positionDraft.stop ?? "—"} ·
-            {" "}Target {positionDraft.target ?? "—"}
-          </p>
-        )}
-
         {positions.length > 0 && (
-          <div className="position-list">
+          <div className="position-editor-list">
             {positions.map((position, index) => {
               const risk = Math.abs(Number(position.entry) - Number(position.stop));
               const reward = Math.abs(Number(position.target) - Number(position.entry));
               const rr = risk > 0 ? (reward / risk).toFixed(2) : "—";
 
               return (
-                <button
-                  key={position.id}
-                  className="position-item"
-                  onClick={() => deletePosition(position.id)}
-                >
-                  {position.side === "long" ? "↗ Long" : "↘ Short"} {index + 1}
-                  {" "}· E ₹{Number(position.entry).toFixed(2)}
-                  {" "}· SL ₹{Number(position.stop).toFixed(2)}
-                  {" "}· T ₹{Number(position.target).toFixed(2)}
-                  {" "}· RR {rr} ✕
-                </button>
+                <div key={position.id} className="position-editor">
+                  <div className="position-editor-head">
+                    <strong>
+                      {position.side === "long" ? "↗ Long" : "↘ Short"} {index + 1}
+                    </strong>
+                    <span>RR {rr}</span>
+                    <button
+                      className="delete-position"
+                      onClick={() => deletePosition(position.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+
+                  <div className="position-fields">
+                    <label>
+                      Entry
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={position.entry}
+                        onChange={(e) => updatePosition(position.id, "entry", e.target.value)}
+                      />
+                    </label>
+
+                    <label>
+                      Stop
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={position.stop}
+                        onChange={(e) => updatePosition(position.id, "stop", e.target.value)}
+                      />
+                    </label>
+
+                    <label>
+                      Target
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={position.target}
+                        onChange={(e) => updatePosition(position.id, "target", e.target.value)}
+                      />
+                    </label>
+                  </div>
+                </div>
               );
             })}
           </div>
