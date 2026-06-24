@@ -10,6 +10,7 @@ from engine.cisd import detect_cisd_levels
 from engine.liquidity import detect_liquidity, detect_inducements
 from engine.refined_order_blocks import detect_refined_order_blocks
 from engine.chart_export import export_chart_data
+import os
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -19,7 +20,7 @@ OUT_DIR = ROOT / "data" / "processed"
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-SYMBOL = "RELIANCE"
+SYMBOL = os.getenv("ICT_SYMBOL", "RELIANCE")
 EXCHANGE = "NSE"
 INTERVAL = "daily"
 BARS = 300
