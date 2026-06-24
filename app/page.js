@@ -33,6 +33,8 @@ export default function Home() {
   const replaySelectModeRef = useRef(false);
   const hLineModeRef = useRef(false);
   const manualPriceLinesRef = useRef([]);
+  const positionModeRef = useRef(null);
+  const positionPriceLinesRef = useRef([]);
 
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
@@ -45,6 +47,9 @@ export default function Home() {
   const [status, setStatus] = useState("Full chart loaded. Tap ✂ Bar Replay to choose a candle.");
   const [hLineMode, setHLineMode] = useState(false);
   const [manualLines, setManualLines] = useState([]);
+  const [positionMode, setPositionMode] = useState(null);
+  const [positionDraft, setPositionDraft] = useState(null);
+  const [positions, setPositions] = useState([]);
 
   useEffect(() => {
     replaySelectModeRef.current = replaySelectMode;
@@ -53,6 +58,30 @@ export default function Home() {
   useEffect(() => {
     hLineModeRef.current = hLineMode;
   }, [hLineMode]);
+
+  useEffect(() => {
+    positionModeRef.current = positionMode;
+  }, [positionMode]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ict_native_positions");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setPositions(parsed);
+      }
+    } catch (err) {
+      console.warn("Could not restore positions", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("ict_native_positions", JSON.stringify(positions));
+    } catch (err) {
+      console.warn("Could not save positions", err);
+    }
+  }, [positions]);
 
   useEffect(() => {
     try {
@@ -174,6 +203,57 @@ export default function Home() {
       try {
         if (!param?.point) return;
 
+        // Long / Short position tool gets first priority.
+        if (positionModeRef.current) {
+          const price = candleSeries.coordinateToPrice(param.point.y);
+          if (price === null || !Number.isFinite(price)) return;
+
+          const selectedPrice = Number(price.toFixed(2));
+          const mode = positionModeRef.current;
+
+          setPositionDraft((oldDraft) => {
+            const draft = oldDraft && oldDraft.side === mode
+              ? oldDraft
+              : { side: mode, entry: null, stop: null, target: null };
+
+            if (draft.entry === null) {
+              setStatus(`${mode === "long" ? "Long" : "Short"}: now tap Stop Loss.`);
+              return { ...draft, entry: selectedPrice };
+            }
+
+            if (draft.stop === null) {
+              setStatus(`${mode === "long" ? "Long" : "Short"}: now tap Target.`);
+              return { ...draft, stop: selectedPrice };
+            }
+
+            const complete = {
+              id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+              side: mode,
+              entry: Number(draft.entry),
+              stop: Number(draft.stop),
+              target: selectedPrice
+            };
+
+            const risk = Math.abs(complete.entry - complete.stop);
+            const reward = Math.abs(complete.target - complete.entry);
+
+            if (risk <= 0) {
+              setStatus("Invalid position: Entry and Stop Loss cannot be the same.");
+              return { side: mode, entry: null, stop: null, target: null };
+            }
+
+            setPositions((old) => [...old, complete]);
+            setPositionMode(null);
+            setStatus(
+              `${mode === "long" ? "Long" : "Short"} position added · RR ${(reward / risk).toFixed(2)}`
+            );
+
+            return null;
+          });
+
+          return;
+        }
+
         // H-Line tool gets first priority.
         if (hLineModeRef.current) {
           const price = candleSeries.coordinateToPrice(param.point.y);
@@ -290,7 +370,8 @@ export default function Home() {
 
   useEffect(() => {
     redrawManualLines(manualLines);
-  }, [manualLines, data, replayIndex, themeName]);
+    redrawPositions(positions);
+  }, [manualLines, positions, data, replayIndex, themeName]);
 
   useEffect(() => {
     if (!playing || !data || replayIndex === null) return;
@@ -337,9 +418,90 @@ export default function Home() {
     });
   }
 
+  function redrawPositions(items) {
+    if (!candleSeriesRef.current) return;
+
+    positionPriceLinesRef.current.forEach((line) => {
+      try {
+        candleSeriesRef.current.removePriceLine(line);
+      } catch (_) {}
+    });
+
+    positionPriceLinesRef.current = [];
+
+    items.forEach((position, index) => {
+      const isLong = position.side === "long";
+      const prefix = `${isLong ? "Long" : "Short"} ${index + 1}`;
+
+      const lineOptions = [
+        {
+          price: Number(position.entry),
+          color: "#38bdf8",
+          lineWidth: 2,
+          lineStyle: 0,
+          axisLabelVisible: true,
+          title: `${prefix} Entry`
+        },
+        {
+          price: Number(position.stop),
+          color: "#ef4444",
+          lineWidth: 1,
+          lineStyle: 2,
+          axisLabelVisible: true,
+          title: `${prefix} SL`
+        },
+        {
+          price: Number(position.target),
+          color: "#22c55e",
+          lineWidth: 1,
+          lineStyle: 2,
+          axisLabelVisible: true,
+          title: `${prefix} Target`
+        }
+      ];
+
+      lineOptions.forEach((options) => {
+        try {
+          const line = candleSeriesRef.current.createPriceLine(options);
+          positionPriceLinesRef.current.push(line);
+        } catch (err) {
+          console.warn("Could not render position line", err);
+        }
+      });
+    });
+  }
+
+  function startPosition(side) {
+    setPlaying(false);
+    setReplaySelectMode(false);
+    setHLineMode(false);
+    setPositionDraft({ side, entry: null, stop: null, target: null });
+    setPositionMode(side);
+    setStatus(`${side === "long" ? "Long" : "Short"} tool active. Tap Entry price.`);
+  }
+
+  function cancelPosition() {
+    setPositionMode(null);
+    setPositionDraft(null);
+    setStatus("Position tool cancelled.");
+  }
+
+  function deletePosition(id) {
+    setPositions((old) => old.filter((position) => position.id !== id));
+    setStatus("Position deleted.");
+  }
+
+  function clearPositions() {
+    setPositions([]);
+    cancelPosition();
+    setStatus("All positions cleared.");
+  }
+
   function toggleHLineMode() {
     setPlaying(false);
     setReplaySelectMode(false);
+    setPositionMode(null);
+    setPositionDraft(null);
 
     setHLineMode((old) => {
       const next = !old;
@@ -362,6 +524,8 @@ export default function Home() {
   function toggleReplaySelection() {
     setPlaying(false);
     setHLineMode(false);
+    setPositionMode(null);
+    setPositionDraft(null);
     setReplaySelectMode((old) => {
       const next = !old;
       setStatus(
@@ -455,6 +619,24 @@ export default function Home() {
           <button onClick={clearHLines} disabled={manualLines.length === 0}>
             Clear Lines
           </button>
+
+          <button
+            className={positionMode === "long" ? "toggle active long-tool" : "toggle long-tool"}
+            onClick={() => positionMode === "long" ? cancelPosition() : startPosition("long")}
+          >
+            {positionMode === "long" ? "✕ Cancel Long" : "↗ Long"}
+          </button>
+
+          <button
+            className={positionMode === "short" ? "toggle active short-tool" : "toggle short-tool"}
+            onClick={() => positionMode === "short" ? cancelPosition() : startPosition("short")}
+          >
+            {positionMode === "short" ? "✕ Cancel Short" : "↘ Short"}
+          </button>
+
+          <button onClick={clearPositions} disabled={positions.length === 0}>
+            Clear Positions
+          </button>
         </div>
 
         {manualLines.length > 0 && (
@@ -468,6 +650,39 @@ export default function Home() {
                 H-Line {index + 1} · ₹{Number(line.price).toFixed(2)} ✕
               </button>
             ))}
+          </div>
+        )}
+
+        {positionMode && positionDraft && (
+          <p className="position-hint">
+            {positionMode === "long" ? "↗ Long" : "↘ Short"}:
+            {" "}Entry {positionDraft.entry ?? "—"} ·
+            {" "}SL {positionDraft.stop ?? "—"} ·
+            {" "}Target {positionDraft.target ?? "—"}
+          </p>
+        )}
+
+        {positions.length > 0 && (
+          <div className="position-list">
+            {positions.map((position, index) => {
+              const risk = Math.abs(Number(position.entry) - Number(position.stop));
+              const reward = Math.abs(Number(position.target) - Number(position.entry));
+              const rr = risk > 0 ? (reward / risk).toFixed(2) : "—";
+
+              return (
+                <button
+                  key={position.id}
+                  className="position-item"
+                  onClick={() => deletePosition(position.id)}
+                >
+                  {position.side === "long" ? "↗ Long" : "↘ Short"} {index + 1}
+                  {" "}· E ₹{Number(position.entry).toFixed(2)}
+                  {" "}· SL ₹{Number(position.stop).toFixed(2)}
+                  {" "}· T ₹{Number(position.target).toFixed(2)}
+                  {" "}· RR {rr} ✕
+                </button>
+              );
+            })}
           </div>
         )}
       </section>

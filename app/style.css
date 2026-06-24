@@ -151,3 +151,30 @@ button:active { transform: scale(0.97); }
 .drawing-item {
   font-size: 13px;
 }
+
+
+.position-hint {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: #facc15;
+}
+
+.position-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.position-item {
+  font-size: 12px;
+  text-align: left;
+}
+
+.long-tool.active {
+  border-color: #22c55e;
+}
+
+.short-tool.active {
+  border-color: #ef4444;
+}
