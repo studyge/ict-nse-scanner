@@ -2,92 +2,128 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from typing import Literal
+
 import pandas as pd
+
 
 Direction = Literal["bullish", "bearish"]
 
+
 @dataclass
 class FairValueGap:
-    created_index: int
-    created_time: str
     direction: Direction
+    created_at: str
+    created_bar_index: int
+    left_bar_index: int
     top: float
     bottom: float
-    strong_displacement: bool
-    filled: bool = False
-    filled_index: int | None = None
-    filled_time: str | None = None
+    strong_move: bool
+    status: str
+    filled_at: str | None = None
+    filled_bar_index: int | None = None
 
-def detect_fvgs(candles: pd.DataFrame, displacement_ratio: float = 0.5) -> list[FairValueGap]:
+
+def detect_fvgs(
+    candles: pd.DataFrame,
+    strong_body_ratio: float = 0.50,
+) -> list[FairValueGap]:
+    """
+    Recreates the FVG logic from the user's Pine script.
+
+    Bullish:
+        low[current] > high[current - 2]
+        zone: top=low[current], bottom=high[current - 2]
+
+    Bearish:
+        high[current] < low[current - 2]
+        zone: top=low[current - 2], bottom=high[current]
+
+    Strong move is measured on the current candle:
+        abs(close - open) > (high - low) * strong_body_ratio
+    """
     required = {"datetime", "open", "high", "low", "close"}
     missing = required - set(candles.columns)
+
     if missing:
         raise ValueError(f"Missing candle columns: {sorted(missing)}")
 
-    df = candles.reset_index(drop=True).copy()
-    active_bullish = []
-    active_bearish = []
-    all_fvgs = []
+    candles = candles.reset_index(drop=True).copy()
+    gaps: list[FairValueGap] = []
 
-    for index in range(len(df)):
-        high = float(df.at[index, "high"])
-        low = float(df.at[index, "low"])
-        open_price = float(df.at[index, "open"])
-        close = float(df.at[index, "close"])
+    for bar_index in range(2, len(candles)):
+        open_price = float(candles.at[bar_index, "open"])
+        high = float(candles.at[bar_index, "high"])
+        low = float(candles.at[bar_index, "low"])
+        close = float(candles.at[bar_index, "close"])
 
-        # Match Script 1: remove FVG when it gets filled.
-        for fvg in active_bullish[:]:
-            if low <= fvg.top:
-                fvg.filled = True
-                fvg.filled_index = index
-                fvg.filled_time = str(df.at[index, "datetime"])
-                active_bullish.remove(fvg)
+        high_two_bars_ago = float(candles.at[bar_index - 2, "high"])
+        low_two_bars_ago = float(candles.at[bar_index - 2, "low"])
 
-        for fvg in active_bearish[:]:
-            if high >= fvg.bottom:
-                fvg.filled = True
-                fvg.filled_index = index
-                fvg.filled_time = str(df.at[index, "datetime"])
-                active_bearish.remove(fvg)
-
-        if index < 2:
-            continue
-
-        candle_range = high - low
         body = abs(close - open_price)
-        strong_move = candle_range > 0 and body > candle_range * displacement_ratio
+        candle_range = high - low
+
+        strong_move = (
+            candle_range > 0
+            and body > candle_range * strong_body_ratio
+        )
 
         if not strong_move:
             continue
 
-        high_two_bars_ago = float(df.at[index - 2, "high"])
-        low_two_bars_ago = float(df.at[index - 2, "low"])
+        timestamp = str(candles.at[bar_index, "datetime"])
 
+        # Pine: bullFVG = low > high[2]
         if low > high_two_bars_ago:
-            fvg = FairValueGap(
-                created_index=index,
-                created_time=str(df.at[index, "datetime"]),
-                direction="bullish",
-                top=low,
-                bottom=high_two_bars_ago,
-                strong_displacement=True,
+            gaps.append(
+                FairValueGap(
+                    direction="bullish",
+                    created_at=timestamp,
+                    created_bar_index=bar_index,
+                    left_bar_index=bar_index - 2,
+                    top=low,
+                    bottom=high_two_bars_ago,
+                    strong_move=True,
+                    status="active",
+                )
             )
-            active_bullish.append(fvg)
-            all_fvgs.append(fvg)
 
+        # Pine: bearFVG = high < low[2]
         if high < low_two_bars_ago:
-            fvg = FairValueGap(
-                created_index=index,
-                created_time=str(df.at[index, "datetime"]),
-                direction="bearish",
-                top=low_two_bars_ago,
-                bottom=high,
-                strong_displacement=True,
+            gaps.append(
+                FairValueGap(
+                    direction="bearish",
+                    created_at=timestamp,
+                    created_bar_index=bar_index,
+                    left_bar_index=bar_index - 2,
+                    top=low_two_bars_ago,
+                    bottom=high,
+                    strong_move=True,
+                    status="active",
+                )
             )
-            active_bearish.append(fvg)
-            all_fvgs.append(fvg)
 
-    return all_fvgs
+    # Pine mitigation logic:
+    # Bullish FVG removed if low <= box top
+    # Bearish FVG removed if high >= box bottom
+    for gap in gaps:
+        for bar_index in range(gap.created_bar_index + 1, len(candles)):
+            high = float(candles.at[bar_index, "high"])
+            low = float(candles.at[bar_index, "low"])
 
-def fvgs_to_records(fvgs: list[FairValueGap]) -> list[dict]:
-    return [asdict(fvg) for fvg in fvgs]
+            filled = (
+                gap.direction == "bullish" and low <= gap.top
+            ) or (
+                gap.direction == "bearish" and high >= gap.bottom
+            )
+
+            if filled:
+                gap.status = "filled"
+                gap.filled_at = str(candles.at[bar_index, "datetime"])
+                gap.filled_bar_index = bar_index
+                break
+
+    return gaps
+
+
+def fvgs_to_dict(gaps: list[FairValueGap]) -> list[dict]:
+    return [asdict(gap) for gap in gaps]
