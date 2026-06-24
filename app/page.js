@@ -356,28 +356,26 @@ export default function Home() {
             {replaySelectMode ? "✕ Cancel Replay" : "✂ Bar Replay"}
           </button>
 
-          <button
-            className="play"
-            onClick={() => {
-              if (replayIndex === null) {
-                nextCandle();
-                return;
-              }
-              setPlaying((value) => !value);
-            }}
-          >
-            {playing ? "Pause" : "▶ Play"}
-          </button>
+          {replayIndex !== null && (
+            <>
+              <button
+                className="play"
+                onClick={() => setPlaying((value) => !value)}
+              >
+                {playing ? "Pause" : "▶ Play"}
+              </button>
 
-          <button onClick={nextCandle}>Next ▶</button>
+              <button onClick={nextCandle}>Next ▶</button>
 
-          <select value={speed} onChange={(event) => setSpeed(Number(event.target.value))}>
-            <option value="1">1x speed</option>
-            <option value="2">2x speed</option>
-            <option value="5">5x speed</option>
-          </select>
+              <select value={speed} onChange={(event) => setSpeed(Number(event.target.value))}>
+                <option value="1">1x speed</option>
+                <option value="2">2x speed</option>
+                <option value="5">5x speed</option>
+              </select>
 
-          <button onClick={resetReplay}>Reset</button>
+              <button onClick={resetReplay}>Reset</button>
+            </>
+          )}
         </div>
       </section>
     </main>
