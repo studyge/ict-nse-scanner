@@ -31,6 +31,8 @@ export default function Home() {
   const chartRef = useRef(null);
   const candleSeriesRef = useRef(null);
   const replaySelectModeRef = useRef(false);
+  const hLineModeRef = useRef(false);
+  const manualPriceLinesRef = useRef([]);
 
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
@@ -41,10 +43,36 @@ export default function Home() {
   const [speed, setSpeed] = useState(1);
   const [themeName, setThemeName] = useState("dark");
   const [status, setStatus] = useState("Full chart loaded. Tap ✂ Bar Replay to choose a candle.");
+  const [hLineMode, setHLineMode] = useState(false);
+  const [manualLines, setManualLines] = useState([]);
 
   useEffect(() => {
     replaySelectModeRef.current = replaySelectMode;
   }, [replaySelectMode]);
+
+  useEffect(() => {
+    hLineModeRef.current = hLineMode;
+  }, [hLineMode]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ict_native_hlines");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setManualLines(parsed);
+      }
+    } catch (err) {
+      console.warn("Could not restore H-Lines", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("ict_native_hlines", JSON.stringify(manualLines));
+    } catch (err) {
+      console.warn("Could not save H-Lines", err);
+    }
+  }, [manualLines]);
 
   useEffect(() => {
     fetch(DATA_URL)
@@ -144,7 +172,27 @@ export default function Home() {
 
     chart.subscribeClick((param) => {
       try {
-        if (!replaySelectModeRef.current || !param?.point) return;
+        if (!param?.point) return;
+
+        // H-Line tool gets first priority.
+        if (hLineModeRef.current) {
+          const price = candleSeries.coordinateToPrice(param.point.y);
+
+          if (price === null || !Number.isFinite(price)) return;
+
+          const newLine = {
+            id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+            price: Number(price.toFixed(2))
+          };
+
+          setManualLines((old) => [...old, newLine]);
+          setHLineMode(false);
+          setStatus(`H-Line added at ₹${Number(price).toFixed(2)}.`);
+          return;
+        }
+
+        // Replay candle selection.
+        if (!replaySelectModeRef.current) return;
 
         const logical = chart.timeScale().coordinateToLogical(param.point.x);
         if (logical === null || !Number.isFinite(logical)) return;
@@ -161,8 +209,8 @@ export default function Home() {
           `Replay starts from ${new Date(candle.time).toLocaleDateString()} · ₹${Number(candle.close).toFixed(2)}`
         );
       } catch (err) {
-        console.error("Replay selection error:", err);
-        setStatus("Could not select candle. Tap ✂ Bar Replay and try again.");
+        console.error("Chart click error:", err);
+        setStatus("Could not complete chart action. Try again.");
       }
     });
 
@@ -241,6 +289,10 @@ export default function Home() {
   }, [data, replayStart, replayIndex]);
 
   useEffect(() => {
+    redrawManualLines(manualLines);
+  }, [manualLines, data, replayIndex, themeName]);
+
+  useEffect(() => {
     if (!playing || !data || replayIndex === null) return;
 
     const timer = setInterval(() => {
@@ -257,8 +309,59 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [playing, speed, data, replayIndex]);
 
+  function redrawManualLines(lines) {
+    if (!candleSeriesRef.current) return;
+
+    manualPriceLinesRef.current.forEach((line) => {
+      try {
+        candleSeriesRef.current.removePriceLine(line);
+      } catch (_) {}
+    });
+
+    manualPriceLinesRef.current = [];
+
+    lines.forEach((item) => {
+      try {
+        const line = candleSeriesRef.current.createPriceLine({
+          price: Number(item.price),
+          color: "#38bdf8",
+          lineWidth: 1,
+          lineStyle: 2,
+          axisLabelVisible: true,
+          title: "H-Line"
+        });
+        manualPriceLinesRef.current.push(line);
+      } catch (err) {
+        console.warn("Could not render H-Line", err);
+      }
+    });
+  }
+
+  function toggleHLineMode() {
+    setPlaying(false);
+    setReplaySelectMode(false);
+
+    setHLineMode((old) => {
+      const next = !old;
+      setStatus(next ? "─ H-Line active. Tap any chart price." : "H-Line cancelled.");
+      return next;
+    });
+  }
+
+  function deleteHLine(id) {
+    setManualLines((old) => old.filter((line) => line.id !== id));
+    setStatus("H-Line deleted.");
+  }
+
+  function clearHLines() {
+    setManualLines([]);
+    setHLineMode(false);
+    setStatus("All H-Lines cleared.");
+  }
+
   function toggleReplaySelection() {
     setPlaying(false);
+    setHLineMode(false);
     setReplaySelectMode((old) => {
       const next = !old;
       setStatus(
@@ -336,6 +439,37 @@ export default function Home() {
 
       <section className="chart-card">
         <div ref={chartBox} className="chart" />
+      </section>
+
+      <section className="drawing-card">
+        <div className="drawing-title">Drawing Tools</div>
+
+        <div className="controls">
+          <button
+            className={hLineMode ? "toggle active" : "toggle"}
+            onClick={toggleHLineMode}
+          >
+            {hLineMode ? "✕ Cancel H-Line" : "─ H-Line"}
+          </button>
+
+          <button onClick={clearHLines} disabled={manualLines.length === 0}>
+            Clear Lines
+          </button>
+        </div>
+
+        {manualLines.length > 0 && (
+          <div className="drawing-list">
+            {manualLines.map((line, index) => (
+              <button
+                key={line.id}
+                className="drawing-item"
+                onClick={() => deleteHLine(line.id)}
+              >
+                H-Line {index + 1} · ₹{Number(line.price).toFixed(2)} ✕
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="replay-card">
