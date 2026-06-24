@@ -6,14 +6,24 @@
 body {
   margin: 0;
   background: #07101f;
-  color: #e2e8f0;
   font-family: Arial, sans-serif;
+}
+
+.app {
+  min-height: 100vh;
+  background: #07101f;
+  color: #e2e8f0;
+  padding: 14px;
+}
+
+.app.light {
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 main {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 14px;
 }
 
 header {
@@ -32,6 +42,10 @@ h1 {
 p {
   margin: 5px 0;
   color: #94a3b8;
+}
+
+.light p {
+  color: #475569;
 }
 
 .price {
@@ -64,24 +78,34 @@ select {
   border: 1px solid #334155;
   background: #111c30;
   color: #e2e8f0;
-  border-radius: 8px;
-  padding: 9px 11px;
+  border-radius: 9px;
+  padding: 10px 12px;
   font-size: 14px;
+  touch-action: manipulation;
+}
+
+.light button,
+.light select {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #cbd5e1;
 }
 
 button:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .toggle.active,
 .play {
   background: #0f766e;
   border-color: #14b8a6;
+  color: white;
 }
 
 .replay-hint {
   color: #facc15;
   font-size: 13px;
+  font-weight: bold;
 }
 
 .status-card,
@@ -92,6 +116,13 @@ button:active {
   border-radius: 12px;
   padding: 12px;
   margin-bottom: 12px;
+}
+
+.light .status-card,
+.light .replay-card,
+.light .chart-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
 }
 
 .status-card {
@@ -109,8 +140,7 @@ button:active {
   cursor: crosshair;
 }
 
-.replay-top,
-.selected-candle {
+.replay-top {
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -119,16 +149,22 @@ button:active {
   color: #cbd5e1;
 }
 
+.light .replay-top {
+  color: #334155;
+}
+
 .loading {
   min-height: 100vh;
   display: grid;
   place-content: center;
   text-align: center;
   padding: 20px;
+  background: #07101f;
+  color: #e2e8f0;
 }
 
 @media (max-width: 600px) {
-  main {
+  .app {
     padding: 10px;
   }
 
