@@ -121,3 +121,34 @@ button:active { transform: scale(0.97); }
   .chart { min-height: 430px; }
   button, select { padding: 9px; font-size: 13px; }
 }
+
+
+.drawing-card {
+  background: #0b1729;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.light .drawing-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.drawing-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.drawing-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.drawing-item.selected {
+  border-color: #facc15;
+  color: #facc15;
+}

@@ -40,11 +40,28 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [themeName, setThemeName] = useState("dark");
+  const [activeTool, setActiveTool] = useState("cursor");
+  const [drawings, setDrawings] = useState([]);
+  const [pendingPoint, setPendingPoint] = useState(null);
+  const [selectedDrawingId, setSelectedDrawingId] = useState(null);
   const [status, setStatus] = useState("Full chart loaded. Tap ✂ Bar Replay to choose a candle.");
 
   useEffect(() => {
     replaySelectModeRef.current = replaySelectMode;
   }, [replaySelectMode]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ict_manual_drawings");
+      if (saved) setDrawings(JSON.parse(saved));
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("ict_manual_drawings", JSON.stringify(drawings));
+    } catch (_) {}
+  }, [drawings]);
 
   useEffect(() => {
     fetch(DATA_URL)
@@ -144,6 +161,7 @@ export default function Home() {
 
     chart.subscribeClick((param) => {
       try {
+        if (handleDrawingClick(param)) return;
         if (!replaySelectModeRef.current || !param?.point) return;
 
         const logical = chart.timeScale().coordinateToLogical(param.point.x);
@@ -257,6 +275,87 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [playing, speed, data, replayIndex]);
 
+  function chartPointFromClick(param) {
+    if (!param?.point || !chartRef.current) return null;
+
+    const logical = chartRef.current.timeScale().coordinateToLogical(param.point.x);
+    const price = candleSeriesRef.current?.coordinateToPrice(param.point.y);
+
+    if (logical === null || !Number.isFinite(logical) || price === null || !Number.isFinite(price)) {
+      return null;
+    }
+
+    return {
+      bar: clamp(Math.round(logical), 0, data.candles.length - 1),
+      price: Number(price.toFixed(2))
+    };
+  }
+
+  function handleDrawingClick(param) {
+    if (activeTool === "cursor" || activeTool === "replay") return false;
+
+    const point = chartPointFromClick(param);
+    if (!point) return true;
+
+    if (activeTool === "hline") {
+      const drawing = {
+        id: Date.now(),
+        type: "hline",
+        price: point.price,
+        label: "H-Line"
+      };
+      setDrawings((old) => [...old, drawing]);
+      setSelectedDrawingId(drawing.id);
+      setStatus(`Horizontal line added at ₹${point.price}`);
+      setActiveTool("cursor");
+      return true;
+    }
+
+    if (!pendingPoint) {
+      setPendingPoint(point);
+      setStatus(activeTool === "trend" ? "Tap second point for trend line." : "Tap opposite corner for zone.");
+      return true;
+    }
+
+    const drawing = activeTool === "trend"
+      ? {
+          id: Date.now(),
+          type: "trend",
+          start: pendingPoint,
+          end: point,
+          label: "Trend"
+        }
+      : {
+          id: Date.now(),
+          type: "zone",
+          start: pendingPoint,
+          end: point,
+          label: "Zone"
+        };
+
+    setDrawings((old) => [...old, drawing]);
+    setSelectedDrawingId(drawing.id);
+    setPendingPoint(null);
+    setActiveTool("cursor");
+    setStatus(`${drawing.label} added.`);
+    return true;
+  }
+
+  function deleteSelectedDrawing() {
+    if (selectedDrawingId === null) return;
+    setDrawings((old) => old.filter((item) => item.id !== selectedDrawingId));
+    setSelectedDrawingId(null);
+    setStatus("Selected drawing deleted.");
+  }
+
+  function clearDrawings() {
+    setDrawings([]);
+    setPendingPoint(null);
+    setSelectedDrawingId(null);
+    setActiveTool("cursor");
+    setStatus("All manual drawings cleared.");
+  }
+
   function toggleReplaySelection() {
     setPlaying(false);
     setReplaySelectMode((old) => {
@@ -336,6 +435,41 @@ export default function Home() {
 
       <section className="chart-card">
         <div ref={chartBox} className="chart" />
+      </section>
+
+      <section className="drawing-card">
+        <div className="drawing-title">Drawing Tools</div>
+        <div className="controls">
+          <button className={activeTool === "cursor" ? "toggle active" : "toggle"} onClick={() => { setActiveTool("cursor"); setPendingPoint(null); }}>
+            Cursor
+          </button>
+          <button className={activeTool === "hline" ? "toggle active" : "toggle"} onClick={() => { setActiveTool("hline"); setPendingPoint(null); setStatus("Tap chart to place horizontal line."); }}>
+            ─ H-Line
+          </button>
+          <button className={activeTool === "trend" ? "toggle active" : "toggle"} onClick={() => { setActiveTool("trend"); setPendingPoint(null); setStatus("Tap first point for trend line."); }}>
+            ╱ Trend
+          </button>
+          <button className={activeTool === "zone" ? "toggle active" : "toggle"} onClick={() => { setActiveTool("zone"); setPendingPoint(null); setStatus("Tap first corner for zone."); }}>
+            □ Zone
+          </button>
+          <button onClick={deleteSelectedDrawing} disabled={selectedDrawingId === null}>Delete</button>
+          <button onClick={clearDrawings} disabled={drawings.length === 0}>Clear All</button>
+        </div>
+
+        {drawings.length > 0 && (
+          <div className="drawing-list">
+            {drawings.map((drawing) => (
+              <button
+                key={drawing.id}
+                className={selectedDrawingId === drawing.id ? "drawing-item selected" : "drawing-item"}
+                onClick={() => setSelectedDrawingId(drawing.id)}
+              >
+                {drawing.label}
+                {drawing.type === "hline" ? ` · ₹${drawing.price}` : ""}
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="replay-card">
