@@ -2,147 +2,156 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from typing import Literal
-
 import pandas as pd
 
-
-EventType = Literal["BOS", "CHoCH"]
 Direction = Literal["bullish", "bearish"]
+EventType = Literal["BOS", "CHoCH"]
 
 
 @dataclass
 class StructureEvent:
-    candle_index: int
-    time: str
+    timestamp: str
+    bar_index: int
     event_type: EventType
     direction: Direction
     level: float
-    pivot_index: int
-    pivot_time: str
+    pivot_bar_index: int
+    pivot_timestamp: str
 
 
-def detect_market_structure(
+def find_pivots(candles: pd.DataFrame, swing_length: int = 7) -> list[dict]:
+    pivots = []
+
+    if len(candles) < (swing_length * 2 + 1):
+        return pivots
+
+    highs = candles["high"].tolist()
+    lows = candles["low"].tolist()
+    times = candles["datetime"].astype(str).tolist()
+
+    for index in range(swing_length, len(candles) - swing_length):
+        left_highs = highs[index - swing_length:index]
+        right_highs = highs[index + 1:index + swing_length + 1]
+
+        left_lows = lows[index - swing_length:index]
+        right_lows = lows[index + 1:index + swing_length + 1]
+
+        if highs[index] > max(left_highs) and highs[index] >= max(right_highs):
+            pivots.append({
+                "type": "high",
+                "bar_index": index,
+                "confirmed_at": index + swing_length,
+                "price": float(highs[index]),
+                "timestamp": times[index],
+            })
+
+        if lows[index] < min(left_lows) and lows[index] <= min(right_lows):
+            pivots.append({
+                "type": "low",
+                "bar_index": index,
+                "confirmed_at": index + swing_length,
+                "price": float(lows[index]),
+                "timestamp": times[index],
+            })
+
+    return sorted(pivots, key=lambda item: item["confirmed_at"])
+
+
+def detect_structure(
     candles: pd.DataFrame,
     swing_length: int = 7,
     min_gap: int = 10,
 ) -> list[StructureEvent]:
-    """
-    Script 1 structure logic:
-    - confirmed pivots use swing_length candles on both sides
-    - BOS / CHoCH trigger only once per pivot level
-    - no future candle data is used before a pivot is confirmed
-    """
-    required = {"datetime", "high", "low", "close"}
+    required = {"datetime", "open", "high", "low", "close"}
     missing = required - set(candles.columns)
+
     if missing:
         raise ValueError(f"Missing candle columns: {sorted(missing)}")
 
-    if len(candles) < (swing_length * 2 + 1):
-        return []
+    candles = candles.reset_index(drop=True).copy()
+    pivots = find_pivots(candles, swing_length)
 
-    df = candles.reset_index(drop=True).copy()
+    pivots_by_confirmation = {}
+    for pivot in pivots:
+        pivots_by_confirmation.setdefault(pivot["confirmed_at"], []).append(pivot)
 
-    last_high = None
-    last_low = None
-    last_high_index = None
-    last_low_index = None
-
-    # Prevent the same swing level from producing repeated breaks.
-    high_consumed = False
-    low_consumed = False
+    latest_high = None
+    latest_low = None
+    used_high_pivots = set()
+    used_low_pivots = set()
 
     trend = 0
-    last_signal_index = None
-    events: list[StructureEvent] = []
+    last_signal_bar = None
+    events = []
 
-    for current_index in range(len(df)):
-        pivot_index = current_index - swing_length
+    for bar_index in range(len(candles)):
+        for pivot in pivots_by_confirmation.get(bar_index, []):
+            if pivot["type"] == "high":
+                latest_high = pivot
+            else:
+                latest_low = pivot
 
-        if pivot_index >= swing_length:
-            left = pivot_index - swing_length
-            right = pivot_index + swing_length + 1
-
-            window_highs = df.loc[left:right - 1, "high"]
-            window_lows = df.loc[left:right - 1, "low"]
-
-            pivot_high = float(df.at[pivot_index, "high"])
-            pivot_low = float(df.at[pivot_index, "low"])
-
-            if pivot_high == float(window_highs.max()) and (window_highs == pivot_high).sum() == 1:
-                last_high = pivot_high
-                last_high_index = pivot_index
-                high_consumed = False
-
-            if pivot_low == float(window_lows.min()) and (window_lows == pivot_low).sum() == 1:
-                last_low = pivot_low
-                last_low_index = pivot_index
-                low_consumed = False
-
-        if current_index == 0:
-            continue
-
-        close = float(df.at[current_index, "close"])
-        previous_close = float(df.at[current_index - 1, "close"])
-
-        bull_break = (
-            not high_consumed
-            and last_high is not None
-            and close > last_high
-            and previous_close <= last_high
-        )
-
-        bear_break = (
-            not low_consumed
-            and last_low is not None
-            and close < last_low
-            and previous_close >= last_low
+        close = float(candles.at[bar_index, "close"])
+        previous_close = (
+            float(candles.at[bar_index - 1, "close"])
+            if bar_index > 0 else close
         )
 
         can_draw = (
-            last_signal_index is None
-            or current_index - last_signal_index > min_gap
+            last_signal_bar is None
+            or bar_index - last_signal_bar > min_gap
         )
 
-        if bull_break and can_draw and last_high_index is not None:
+        bull_break = (
+            latest_high is not None
+            and latest_high["bar_index"] not in used_high_pivots
+            and close > latest_high["price"]
+            and previous_close <= latest_high["price"]
+        )
+
+        bear_break = (
+            latest_low is not None
+            and latest_low["bar_index"] not in used_low_pivots
+            and close < latest_low["price"]
+            and previous_close >= latest_low["price"]
+        )
+
+        if bull_break and can_draw:
             event_type = "CHoCH" if trend == -1 else "BOS"
 
-            events.append(
-                StructureEvent(
-                    candle_index=current_index,
-                    time=str(df.at[current_index, "datetime"]),
-                    event_type=event_type,
-                    direction="bullish",
-                    level=last_high,
-                    pivot_index=last_high_index,
-                    pivot_time=str(df.at[last_high_index, "datetime"]),
-                )
-            )
+            events.append(StructureEvent(
+                timestamp=str(candles.at[bar_index, "datetime"]),
+                bar_index=bar_index,
+                event_type=event_type,
+                direction="bullish",
+                level=float(latest_high["price"]),
+                pivot_bar_index=int(latest_high["bar_index"]),
+                pivot_timestamp=str(latest_high["timestamp"]),
+            ))
 
+            used_high_pivots.add(latest_high["bar_index"])
             trend = 1
-            last_signal_index = current_index
-            high_consumed = True
+            last_signal_bar = bar_index
 
-        elif bear_break and can_draw and last_low_index is not None:
+        elif bear_break and can_draw:
             event_type = "CHoCH" if trend == 1 else "BOS"
 
-            events.append(
-                StructureEvent(
-                    candle_index=current_index,
-                    time=str(df.at[current_index, "datetime"]),
-                    event_type=event_type,
-                    direction="bearish",
-                    level=last_low,
-                    pivot_index=last_low_index,
-                    pivot_time=str(df.at[last_low_index, "datetime"]),
-                )
-            )
+            events.append(StructureEvent(
+                timestamp=str(candles.at[bar_index, "datetime"]),
+                bar_index=bar_index,
+                event_type=event_type,
+                direction="bearish",
+                level=float(latest_low["price"]),
+                pivot_bar_index=int(latest_low["bar_index"]),
+                pivot_timestamp=str(latest_low["timestamp"]),
+            ))
 
+            used_low_pivots.add(latest_low["bar_index"])
             trend = -1
-            last_signal_index = current_index
-            low_consumed = True
+            last_signal_bar = bar_index
 
     return events
 
 
-def events_to_records(events: list[StructureEvent]) -> list[dict]:
+def events_to_dict(events: list[StructureEvent]) -> list[dict]:
     return [asdict(event) for event in events]
