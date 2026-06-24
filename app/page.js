@@ -18,13 +18,13 @@ export default function Home() {
   const [replayIndex, setReplayIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
+  const [followReplay, setFollowReplay] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
   useEffect(() => {
     fetch(DATA_URL)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Could not load chart data: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Could not load chart data: ${response.status}`);
         return response.json();
       })
       .then((json) => {
@@ -78,11 +78,28 @@ export default function Home() {
     chartRef.current = chart;
     candleSeriesRef.current = candleSeries;
 
+    // Tap any candle: replay starts immediately from that candle.
+    chart.subscribeClick((param) => {
+      if (!param || param.time === undefined || param.time === null) return;
+
+      const clickedTime = Number(param.time);
+
+      const index = data.candles.findIndex((candle) => {
+        const candleTime = Math.floor(new Date(candle.time).getTime() / 1000);
+        return candleTime === clickedTime;
+      });
+
+      if (index >= 0) {
+        setPlaying(false);
+        setSelectedIndex(index);
+        setReplayStart(index);
+        setReplayIndex(index);
+      }
+    });
+
     const resize = () => {
       if (chartBox.current) {
-        chart.applyOptions({
-          width: chartBox.current.clientWidth,
-        });
+        chart.applyOptions({ width: chartBox.current.clientWidth });
       }
     };
 
@@ -111,13 +128,17 @@ export default function Home() {
 
     candleSeriesRef.current.setData(visibleCandles);
 
-    const from = Math.max(0, replayIndex - 35);
-    const to = Math.min(data.candles.length - 1, replayIndex + 10);
+    // Important: only auto-pan if user turns on Follow Replay.
+    // Normal Next / Play preserves the user's own zoom and pan.
+    if (followReplay) {
+      const from = Math.max(0, replayIndex - 35);
+      const to = Math.min(data.candles.length - 1, replayIndex + 10);
 
-    if (to > from) {
-      chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+      if (to > from) {
+        chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+      }
     }
-  }, [data, replayIndex]);
+  }, [data, replayIndex, followReplay]);
 
   useEffect(() => {
     if (!playing || !data) return;
@@ -130,18 +151,12 @@ export default function Home() {
           setPlaying(false);
           return current;
         }
-
         return current + 1;
       });
     }, delay);
 
     return () => clearInterval(timer);
   }, [playing, speed, data]);
-
-  function startReplay() {
-    setPlaying(false);
-    setReplayIndex(replayStart);
-  }
 
   if (error) {
     return (
@@ -157,7 +172,7 @@ export default function Home() {
   }
 
   const current = data.candles[replayIndex];
-  const startCandle = data.candles[replayStart];
+  const selected = selectedIndex !== null ? data.candles[selectedIndex] : null;
 
   return (
     <main>
@@ -182,37 +197,22 @@ export default function Home() {
 
       <section className="replay-card">
         <div className="replay-top">
-          <span>
-            Visible candle: {replayIndex + 1} / {data.candles.length}
-          </span>
+          <span>Replay candle: {replayIndex + 1} / {data.candles.length}</span>
           <span>
             O {current.open} · H {current.high} · L {current.low} · C {current.close}
           </span>
         </div>
 
         <div className="selected-candle">
-          <span>
-            Replay starts at candle #{replayStart + 1} ·{" "}
-            {new Date(startCandle.time).toLocaleDateString()}
-          </span>
+          {selected ? (
+            <span>
+              Replay started from candle #{selectedIndex + 1} ·{" "}
+              {new Date(selected.time).toLocaleDateString()}
+            </span>
+          ) : (
+            <span>Tap any candle on the chart to start bar replay from that candle.</span>
+          )}
         </div>
-
-        <label className="replay-label">
-          Choose replay start candle
-        </label>
-
-        <input
-          type="range"
-          min="0"
-          max={data.candles.length - 1}
-          value={replayStart}
-          onChange={(event) => {
-            const value = Number(event.target.value);
-            setPlaying(false);
-            setReplayStart(value);
-            setReplayIndex(value);
-          }}
-        />
 
         <div className="controls">
           <button
@@ -231,24 +231,33 @@ export default function Home() {
           <button
             onClick={() => {
               setPlaying(false);
-              setReplayIndex(
-                Math.min(data.candles.length - 1, replayIndex + 1)
-              );
+              setReplayIndex(Math.min(data.candles.length - 1, replayIndex + 1));
             }}
           >
             Next ▶
           </button>
 
-          <select
-            value={speed}
-            onChange={(event) => setSpeed(Number(event.target.value))}
-          >
+          <select value={speed} onChange={(event) => setSpeed(Number(event.target.value))}>
             <option value="1">1x speed</option>
             <option value="2">2x speed</option>
             <option value="5">5x speed</option>
           </select>
 
-          <button onClick={startReplay}>Reset</button>
+          <button
+            className={followReplay ? "toggle active" : "toggle"}
+            onClick={() => setFollowReplay((value) => !value)}
+          >
+            {followReplay ? "✓ Follow replay" : "Follow replay"}
+          </button>
+
+          <button
+            onClick={() => {
+              setPlaying(false);
+              setReplayIndex(replayStart);
+            }}
+          >
+            Reset
+          </button>
         </div>
       </section>
     </main>
