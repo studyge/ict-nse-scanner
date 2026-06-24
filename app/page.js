@@ -30,7 +30,7 @@ export default function Home() {
   const [toggles, setToggles] = useState(defaultToggles);
 
   useEffect(() => {
-    fetch("/ict-nse-scanner/data/RELIANCE_daily_chart.json")
+    fetch("./data/RELIANCE_daily_chart.json")
       .then((r) => {
         if (!r.ok) {
           throw new Error(`Chart JSON not found: ${r.status} ${r.statusText}`);
