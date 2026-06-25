@@ -6,106 +6,6 @@
   "count": 7,
   "results": [
     {
-      "symbol": "HDFCBANK",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 793.2,
-      "bias": "Bullish",
-      "score": 85,
-      "label": "A",
-      "latest_structure": {
-        "type": "CHoCH_UP",
-        "direction": "bullish",
-        "level": 790.85,
-        "start_bar_index": 279,
-        "bar_index": 295,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 1,
-      "active_cisd_count": 0,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "INFY",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 1056.6,
-      "bias": "Bearish",
-      "score": 85,
-      "label": "A",
-      "latest_structure": {
-        "type": "BOS_DOWN",
-        "direction": "bearish",
-        "level": 1153.6,
-        "start_bar_index": 281,
-        "bar_index": 289,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 1,
-      "active_cisd_count": 2,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "SBIN",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 1034.6,
-      "bias": "Bearish",
-      "score": 75,
-      "label": "A",
-      "latest_structure": {
-        "type": "BOS_DOWN",
-        "direction": "bearish",
-        "level": 975.8,
-        "start_bar_index": 242,
-        "bar_index": 268,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 1,
-      "active_cisd_count": 0,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "LT",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 4181.7,
-      "bias": "Bullish",
-      "score": 70,
-      "label": "B",
-      "latest_structure": {
-        "type": "CHoCH_UP",
-        "direction": "bullish",
-        "level": 4128.0,
-        "start_bar_index": 281,
-        "bar_index": 292,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 0,
-      "active_cisd_count": 1,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
       "symbol": "RELIANCE",
       "exchange": "NSE",
       "interval": "1D",
@@ -156,6 +56,56 @@
       }
     },
     {
+      "symbol": "HDFCBANK",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 793.2,
+      "bias": "Bullish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 790.85,
+        "start_bar_index": 279,
+        "bar_index": 295,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "INFY",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1056.6,
+      "bias": "Bearish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 1153.6,
+        "start_bar_index": 281,
+        "bar_index": 289,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 2,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
       "symbol": "ICICIBANK",
       "exchange": "NSE",
       "interval": "1D",
@@ -174,6 +124,56 @@
       "active_fvg_count": 0,
       "active_ob_count": 0,
       "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "SBIN",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1034.6,
+      "bias": "Bearish",
+      "score": 75,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 975.8,
+        "start_bar_index": 242,
+        "bar_index": 268,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "LT",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 4181.7,
+      "bias": "Bullish",
+      "score": 70,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 4128.0,
+        "start_bar_index": 281,
+        "bar_index": 292,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
