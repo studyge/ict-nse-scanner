@@ -487,3 +487,157 @@ button:active { transform: scale(0.97); }
     flex: 1 1 100%;
   }
 }
+
+
+/* Phase 17 — Separate scanner page */
+.chart-scanner-link {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  background: #0b1528;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chart-scanner-link div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.chart-scanner-link strong {
+  font-size: 14px;
+}
+
+.chart-scanner-link span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.chart-scanner-link a,
+.scanner-back-chart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  background: #132039;
+  color: #e2e8f0;
+  padding: 9px 12px;
+  text-decoration: none;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.scanner-page {
+  width: min(1280px, calc(100% - 24px));
+  margin: 0 auto;
+  padding: 18px 0 40px;
+  color: #e2e8f0;
+}
+
+.scanner-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.scanner-page-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.scanner-page-header p {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.scanner-page-card {
+  border: 1px solid #334155;
+  border-radius: 14px;
+  background: #0b1528;
+  overflow: hidden;
+}
+
+.scanner-page-toolbar {
+  border-bottom: 1px solid #1e293b;
+}
+
+.scanner-page-list {
+  min-height: 120px;
+}
+
+.scanner-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px;
+  border-top: 1px solid #1e293b;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.scanner-pagination button {
+  border: 1px solid #475569;
+  border-radius: 8px;
+  background: #132039;
+  color: #e2e8f0;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.scanner-pagination button:disabled {
+  opacity: 0.45;
+}
+
+.light .chart-scanner-link,
+.light .scanner-page-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.light .chart-scanner-link a,
+.light .scanner-back-chart,
+.light .scanner-pagination button {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.light .scanner-page-header {
+  color: #0f172a;
+}
+
+.light .scanner-page-toolbar,
+.light .scanner-pagination {
+  border-color: #e2e8f0;
+}
+
+@media (max-width: 720px) {
+  .scanner-page {
+    width: min(100% - 16px, 1280px);
+    padding-top: 12px;
+  }
+
+  .scanner-page-header,
+  .chart-scanner-link {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .scanner-page-header .scanner-back-chart,
+  .chart-scanner-link a {
+    width: 100%;
+  }
+
+  .scanner-pagination {
+    justify-content: space-between;
+  }
+}

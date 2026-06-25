@@ -51,6 +51,21 @@ export default function Home() {
   const positionPriceLinesRef = useRef([]);
 
   const [selectedSymbol, setSelectedSymbol] = useState("RELIANCE");
+
+  // Phase 17: allow /?symbol=INFY links from the scanner page.
+  useEffect(() => {
+    try {
+      const requested = new URLSearchParams(window.location.search)
+        .get("symbol")
+        ?.trim()
+        .toUpperCase();
+
+      const valid = SYMBOLS.some((item) => item.symbol === requested);
+      if (valid) setSelectedSymbol(requested);
+    } catch (_) {
+      // Keep default RELIANCE if URL parsing is unavailable.
+    }
+  }, []);
   const [scannerData, setScannerData] = useState(null);
   const [scannerError, setScannerError] = useState("");
   const [scannerOpen, setScannerOpen] = useState(true);
@@ -754,155 +769,12 @@ export default function Home() {
 
   return (
     <main className={themeName === "light" ? "app light" : "app"}>
-      <section className="scanner-panel">
-        <div className="scanner-panel-head">
-          <div>
-            <h2>Daily SMC Scanner</h2>
-            <p>Based on your SMC FINAL PRO Pine Script · local structure and active zones</p>
-          </div>
-
-          <button
-            type="button"
-            className="scanner-toggle"
-            onClick={() => setScannerOpen((value) => !value)}
-          >
-            {scannerOpen ? "Hide" : "Show"}
-          </button>
+      <section className="chart-scanner-link">
+        <div>
+          <strong>Daily SMC Scanner</strong>
+          <span>Search, filters and pagination are available on the scanner page.</span>
         </div>
-
-        {scannerOpen && (
-          <>
-            {scannerError && <p className="scanner-error">{scannerError}</p>}
-
-            {!scannerData && !scannerError && (
-              <p className="scanner-loading">Loading scanner…</p>
-            )}
-
-            {scannerData?.results?.length > 0 && (
-              <>
-                <div className="scanner-toolbar">
-                  <input
-                    className="scanner-search"
-                    value={scannerSearch}
-                    onChange={(event) => setScannerSearch(event.target.value)}
-                    placeholder="Search symbol..."
-                    aria-label="Search scanner symbols"
-                  />
-
-                  <select
-                    className="scanner-select"
-                    value={scannerBiasFilter}
-                    onChange={(event) => setScannerBiasFilter(event.target.value)}
-                    aria-label="Filter local structure"
-                  >
-                    <option value="All">All structure</option>
-                    <option value="Bullish">Bullish</option>
-                    <option value="Bearish">Bearish</option>
-                    <option value="Neutral">Neutral</option>
-                  </select>
-
-                  <select
-                    className="scanner-select"
-                    value={scannerZoneFilter}
-                    onChange={(event) => setScannerZoneFilter(event.target.value)}
-                    aria-label="Filter active zones"
-                  >
-                    <option value="All">All zones</option>
-                    <option value="OB">Active OB only</option>
-                    <option value="CISD">Active CISD only</option>
-                  </select>
-
-                  <select
-                    className="scanner-select"
-                    value={scannerSort}
-                    onChange={(event) => setScannerSort(event.target.value)}
-                    aria-label="Sort scanner"
-                  >
-                    <option value="newest">Newest structure</option>
-                    <option value="zones">Most active zones</option>
-                    <option value="symbol">Symbol A–Z</option>
-                  </select>
-
-                  <button
-                    type="button"
-                    className="scanner-reset"
-                    onClick={() => {
-                      setScannerSearch("");
-                      setScannerBiasFilter("All");
-                      setScannerZoneFilter("All");
-                      setScannerSort("newest");
-                    }}
-                  >
-                    Reset
-                  </button>
-                </div>
-
-                <div className="scanner-results-note">
-                  {getFilteredScannerRows().length} of {scannerData.results.length} symbols
-                </div>
-
-                <div className="scanner-list">
-                {getFilteredScannerRows().map((row) => {
-                  const active = row.symbol === selectedSymbol;
-                  const structure = row.latest_structure;
-                  const structureText = structure?.type
-                    ? structure.type.replaceAll("_", " ")
-                    : "No structure";
-
-                  const biasClass = row.bias === "Bullish"
-                    ? "scanner-bull"
-                    : row.bias === "Bearish"
-                      ? "scanner-bear"
-                      : "scanner-neutral";
-
-                  return (
-                    <div
-                      className={active ? "scanner-row active" : "scanner-row"}
-                      key={row.symbol}
-                    >
-                      <div className="scanner-symbol">
-                        <strong>{row.symbol}</strong>
-                        <span>₹ {Number(row.close || 0).toFixed(2)}</span>
-                      </div>
-
-                      <div className="scanner-detail">
-                        <b className={biasClass}>
-                          {row.bias || "Neutral"} local structure
-                        </b>
-                        <span>{structureText} · {shortDate(structure?.created_at)}</span>
-                      </div>
-
-                      <div className="scanner-zone">
-                        <b>{scannerZoneText(row)}</b>
-                        <span>
-                          OB {row.active_ob_count || 0} · FVG {row.active_fvg_count || 0} · CISD {row.active_cisd_count || 0}
-                        </span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="scanner-open-chart"
-                        onClick={() => {
-                          setSelectedSymbol(row.symbol);
-                          setScannerOpen(false);
-                        }}
-                      >
-                        {active ? "Viewing" : "Open chart"}
-                      </button>
-                    </div>
-                  );
-                })}
-                </div>
-
-                {getFilteredScannerRows().length === 0 && (
-                  <div className="scanner-empty">
-                    No symbols match these filters.
-                  </div>
-                )}
-              </>
-            )}
-          </>
-        )}
+        <a href={`${BASE_PATH}/scanner`}>Open Scanner</a>
       </section>
 
       <header>
