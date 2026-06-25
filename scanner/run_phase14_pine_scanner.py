@@ -12,6 +12,16 @@ from engine.pine_smc_final_pro import detect_pine_smc
 DATA_DIR = ROOT / "public" / "data"
 SYMBOLS = ["RELIANCE", "TCS", "HDFCBANK", "INFY", "ICICIBANK", "SBIN", "LT"]
 
+
+# PHASE20_SINGLE_SYMBOL_OVERRIDE
+# Allows Phase 19 to request exactly one NSE symbol without changing Pine logic.
+import os as _phase20_os
+
+_phase20_symbol = _phase20_os.getenv("ICT_SYMBOL", "").strip().upper()
+
+if _phase20_symbol:
+    SYMBOLS = [_phase20_symbol]
+
 def latest_structure(items):
     return items[-1] if items else None
 
