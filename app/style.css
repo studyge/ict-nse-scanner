@@ -641,3 +641,43 @@ button:active { transform: scale(0.97); }
     justify-content: space-between;
   }
 }
+
+
+/* Phase 18A — multi-timeframe-ready scanner */
+.scanner-timeframe-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #1e293b;
+}
+.scanner-timeframe-bar button {
+  border: 1px solid #475569;
+  border-radius: 7px;
+  background: #132039;
+  color: #e2e8f0;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.scanner-timeframe-bar button.active {
+  border-color: #14b8a6;
+  background: rgba(20, 184, 166, 0.16);
+  color: #5eead4;
+}
+.scanner-timeframe-bar span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+.light .scanner-timeframe-bar {
+  border-color: #e2e8f0;
+}
+.light .scanner-timeframe-bar button {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+.light .scanner-timeframe-bar button.active {
+  color: #0f766e;
+  border-color: #0d9488;
+}
