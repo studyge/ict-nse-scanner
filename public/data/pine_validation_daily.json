@@ -1,0 +1,845 @@
+{
+  "meta": {
+    "name": "SMC FINAL PRO Pine parity validation",
+    "source": "User Pine Script v5",
+    "settings": {
+      "swing_length": 7,
+      "min_gap_between_signals": 10,
+      "extend_fvg": 20,
+      "fvg_strong_body_ratio": 0.5,
+      "ob_strong_body_ratio": 0.6
+    },
+    "last_updated": "2026-06-25T00:08:31.584840+00:00"
+  },
+  "symbols": {
+    "RELIANCE": {
+      "latest_close": 1313.6,
+      "trend_state": "bearish",
+      "latest_structure_events": [
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 1461.4,
+          "start_bar_index": 24,
+          "bar_index": 50,
+          "status": "active",
+          "created_at": "2025-06-20T03:45:00",
+          "start_at": "2025-05-15T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1395.6,
+          "start_bar_index": 36,
+          "bar_index": 75,
+          "status": "active",
+          "created_at": "2025-07-25T03:45:00",
+          "start_at": "2025-06-02T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 1361.2,
+          "start_bar_index": 86,
+          "bar_index": 98,
+          "status": "active",
+          "created_at": "2025-08-29T03:45:00",
+          "start_at": "2025-08-11T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 1422.0,
+          "start_bar_index": 112,
+          "bar_index": 133,
+          "status": "active",
+          "created_at": "2025-10-20T03:45:00",
+          "start_at": "2025-09-18T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 1508.3,
+          "start_bar_index": 139,
+          "bar_index": 148,
+          "status": "active",
+          "created_at": "2025-11-12T03:45:00",
+          "start_at": "2025-10-29T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 1581.3,
+          "start_bar_index": 160,
+          "bar_index": 184,
+          "status": "active",
+          "created_at": "2026-01-02T03:45:00",
+          "start_at": "2025-11-28T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1307.0,
+          "start_bar_index": 225,
+          "bar_index": 245,
+          "status": "active",
+          "created_at": "2026-04-06T03:45:00",
+          "start_at": "2026-03-04T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 1430.5,
+          "start_bar_index": 240,
+          "bar_index": 262,
+          "status": "active",
+          "created_at": "2026-04-30T03:45:00",
+          "start_at": "2026-03-25T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1312.6,
+          "start_bar_index": 275,
+          "bar_index": 285,
+          "status": "active",
+          "created_at": "2026-06-04T03:45:00",
+          "start_at": "2026-05-20T03:45:00"
+        }
+      ],
+      "active_order_blocks": [],
+      "active_fvgs": [],
+      "active_cisd_levels": [],
+      "counts": {
+        "structure": 9,
+        "active_order_blocks": 0,
+        "active_fvgs": 0,
+        "active_cisd_levels": 0
+      }
+    },
+    "TCS": {
+      "latest_close": 2109.0,
+      "trend_state": "bearish",
+      "latest_structure_events": [
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 3370.0,
+          "start_bar_index": 51,
+          "bar_index": 65,
+          "status": "active",
+          "created_at": "2025-07-11T03:45:00",
+          "start_at": "2025-06-23T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 3162.0,
+          "start_bar_index": 96,
+          "bar_index": 111,
+          "status": "active",
+          "created_at": "2025-09-17T03:45:00",
+          "start_at": "2025-08-26T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 3070.0,
+          "start_bar_index": 127,
+          "bar_index": 135,
+          "status": "active",
+          "created_at": "2025-10-23T03:45:00",
+          "start_at": "2025-10-10T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 3098.0,
+          "start_bar_index": 135,
+          "bar_index": 148,
+          "status": "active",
+          "created_at": "2025-11-12T03:45:00",
+          "start_at": "2025-10-23T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 3271.6,
+          "start_bar_index": 165,
+          "bar_index": 174,
+          "status": "active",
+          "created_at": "2025-12-18T03:45:00",
+          "start_at": "2025-12-05T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 3082.0,
+          "start_bar_index": 196,
+          "bar_index": 206,
+          "status": "active",
+          "created_at": "2026-02-04T03:45:00",
+          "start_at": "2026-01-21T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 2388.8,
+          "start_bar_index": 258,
+          "bar_index": 269,
+          "status": "active",
+          "created_at": "2026-05-12T03:45:00",
+          "start_at": "2026-04-24T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 2206.4,
+          "start_bar_index": 271,
+          "bar_index": 286,
+          "status": "active",
+          "created_at": "2026-06-05T03:45:00",
+          "start_at": "2026-05-14T03:45:00"
+        }
+      ],
+      "active_order_blocks": [],
+      "active_fvgs": [],
+      "active_cisd_levels": [
+        {
+          "type": "BEAR_CISD",
+          "direction": "bearish",
+          "level": 3356.0,
+          "start_bar_index": 64,
+          "bar_index": 65,
+          "status": "active",
+          "created_at": "2025-07-11T03:45:00",
+          "start_at": "2025-07-10T03:45:00"
+        }
+      ],
+      "counts": {
+        "structure": 8,
+        "active_order_blocks": 0,
+        "active_fvgs": 0,
+        "active_cisd_levels": 1
+      }
+    },
+    "HDFCBANK": {
+      "latest_close": 793.2,
+      "trend_state": "bullish",
+      "latest_structure_events": [
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 980.85,
+          "start_bar_index": 22,
+          "bar_index": 40,
+          "status": "active",
+          "created_at": "2025-06-06T03:45:00",
+          "start_at": "2025-05-13T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 998.15,
+          "start_bar_index": 40,
+          "bar_index": 54,
+          "status": "active",
+          "created_at": "2025-06-26T03:45:00",
+          "start_at": "2025-06-06T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 982.75,
+          "start_bar_index": 82,
+          "bar_index": 94,
+          "status": "active",
+          "created_at": "2025-08-22T03:45:00",
+          "start_at": "2025-08-05T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 979.65,
+          "start_bar_index": 112,
+          "bar_index": 124,
+          "status": "active",
+          "created_at": "2025-10-07T03:45:00",
+          "start_at": "2025-09-18T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 981.3,
+          "start_bar_index": 158,
+          "bar_index": 174,
+          "status": "active",
+          "created_at": "2025-12-18T03:45:00",
+          "start_at": "2025-11-26T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 973.3,
+          "start_bar_index": 174,
+          "bar_index": 186,
+          "status": "active",
+          "created_at": "2026-01-06T03:45:00",
+          "start_at": "2025-12-18T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 905.0,
+          "start_bar_index": 199,
+          "bar_index": 213,
+          "status": "active",
+          "created_at": "2026-02-13T03:45:00",
+          "start_at": "2026-01-27T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 747.0,
+          "start_bar_index": 271,
+          "bar_index": 281,
+          "status": "active",
+          "created_at": "2026-05-29T03:45:00",
+          "start_at": "2026-05-14T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 790.85,
+          "start_bar_index": 279,
+          "bar_index": 295,
+          "status": "active",
+          "created_at": "2026-06-18T03:45:00",
+          "start_at": "2026-05-26T03:45:00"
+        }
+      ],
+      "active_order_blocks": [
+        {
+          "type": "BULL_OB",
+          "direction": "bullish",
+          "top": 790.9,
+          "bottom": 772.55,
+          "start_bar_index": 298,
+          "end_bar_index": 324,
+          "bar_index": 299,
+          "status": "active",
+          "created_at": "2026-06-24T03:45:00",
+          "start_at": "2026-06-23T03:45:00"
+        }
+      ],
+      "active_fvgs": [],
+      "active_cisd_levels": [],
+      "counts": {
+        "structure": 9,
+        "active_order_blocks": 1,
+        "active_fvgs": 0,
+        "active_cisd_levels": 0
+      }
+    },
+    "INFY": {
+      "latest_close": 1056.6,
+      "trend_state": "bearish",
+      "latest_structure_events": [
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1535.6,
+          "start_bar_index": 37,
+          "bar_index": 75,
+          "status": "active",
+          "created_at": "2025-07-25T03:45:00",
+          "start_at": "2025-06-03T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 1539.0,
+          "start_bar_index": 95,
+          "bar_index": 112,
+          "status": "active",
+          "created_at": "2025-09-18T03:45:00",
+          "start_at": "2025-08-25T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 1521.7,
+          "start_bar_index": 127,
+          "bar_index": 135,
+          "status": "active",
+          "created_at": "2025-10-23T03:45:00",
+          "start_at": "2025-10-10T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 1546.0,
+          "start_bar_index": 135,
+          "bar_index": 148,
+          "status": "active",
+          "created_at": "2025-11-12T03:45:00",
+          "start_at": "2025-10-23T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 1559.2,
+          "start_bar_index": 148,
+          "bar_index": 159,
+          "status": "active",
+          "created_at": "2025-11-27T03:45:00",
+          "start_at": "2025-11-12T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 1631.8,
+          "start_bar_index": 165,
+          "bar_index": 175,
+          "status": "active",
+          "created_at": "2025-12-19T03:45:00",
+          "start_at": "2025-12-05T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1449.1,
+          "start_bar_index": 145,
+          "bar_index": 212,
+          "status": "active",
+          "created_at": "2026-02-12T03:45:00",
+          "start_at": "2025-11-07T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 1264.1,
+          "start_bar_index": 220,
+          "bar_index": 232,
+          "status": "active",
+          "created_at": "2026-03-13T03:45:00",
+          "start_at": "2026-02-24T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 1149.8,
+          "start_bar_index": 260,
+          "bar_index": 269,
+          "status": "active",
+          "created_at": "2026-05-12T03:45:00",
+          "start_at": "2026-04-28T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 1153.6,
+          "start_bar_index": 281,
+          "bar_index": 289,
+          "status": "active",
+          "created_at": "2026-06-10T03:45:00",
+          "start_at": "2026-05-29T03:45:00"
+        }
+      ],
+      "active_order_blocks": [
+        {
+          "type": "BEAR_OB",
+          "direction": "bearish",
+          "top": 1162.5,
+          "bottom": 1148.0,
+          "start_bar_index": 294,
+          "end_bar_index": 320,
+          "bar_index": 295,
+          "status": "active",
+          "created_at": "2026-06-18T03:45:00",
+          "start_at": "2026-06-17T03:45:00"
+        }
+      ],
+      "active_fvgs": [],
+      "active_cisd_levels": [
+        {
+          "type": "BEAR_CISD",
+          "direction": "bearish",
+          "level": 1299.3,
+          "start_bar_index": 255,
+          "bar_index": 256,
+          "status": "active",
+          "created_at": "2026-04-22T03:45:00",
+          "start_at": "2026-04-21T03:45:00"
+        },
+        {
+          "type": "BEAR_CISD",
+          "direction": "bearish",
+          "level": 1148.0,
+          "start_bar_index": 294,
+          "bar_index": 295,
+          "status": "active",
+          "created_at": "2026-06-18T03:45:00",
+          "start_at": "2026-06-17T03:45:00"
+        }
+      ],
+      "counts": {
+        "structure": 11,
+        "active_order_blocks": 1,
+        "active_fvgs": 0,
+        "active_cisd_levels": 2
+      }
+    },
+    "ICICIBANK": {
+      "latest_close": 1373.6,
+      "trend_state": "bullish",
+      "latest_structure_events": [
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1412.0,
+          "start_bar_index": 89,
+          "bar_index": 97,
+          "status": "active",
+          "created_at": "2025-08-28T03:45:00",
+          "start_at": "2025-08-14T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 1384.2,
+          "start_bar_index": 101,
+          "bar_index": 116,
+          "status": "active",
+          "created_at": "2025-09-24T03:45:00",
+          "start_at": "2025-09-03T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 1432.8,
+          "start_bar_index": 112,
+          "bar_index": 132,
+          "status": "active",
+          "created_at": "2025-10-17T03:45:00",
+          "start_at": "2025-09-18T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1342.6,
+          "start_bar_index": 120,
+          "bar_index": 143,
+          "status": "active",
+          "created_at": "2025-11-04T03:45:00",
+          "start_at": "2025-09-30T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 1390.4,
+          "start_bar_index": 149,
+          "bar_index": 159,
+          "status": "active",
+          "created_at": "2025-11-27T03:45:00",
+          "start_at": "2025-11-13T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1354.3,
+          "start_bar_index": 157,
+          "bar_index": 173,
+          "status": "active",
+          "created_at": "2025-12-17T03:45:00",
+          "start_at": "2025-11-25T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 1371.3,
+          "start_bar_index": 176,
+          "bar_index": 185,
+          "status": "active",
+          "created_at": "2026-01-05T03:45:00",
+          "start_at": "2025-12-22T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 1336.0,
+          "start_bar_index": 183,
+          "bar_index": 203,
+          "status": "active",
+          "created_at": "2026-02-01T03:45:00",
+          "start_at": "2026-01-01T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 1328.6,
+          "start_bar_index": 199,
+          "bar_index": 227,
+          "status": "active",
+          "created_at": "2026-03-06T03:45:00",
+          "start_at": "2026-01-27T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 1301.8,
+          "start_bar_index": 279,
+          "bar_index": 290,
+          "status": "active",
+          "created_at": "2026-06-11T03:45:00",
+          "start_at": "2026-05-26T03:45:00"
+        }
+      ],
+      "active_order_blocks": [],
+      "active_fvgs": [],
+      "active_cisd_levels": [],
+      "counts": {
+        "structure": 11,
+        "active_order_blocks": 0,
+        "active_fvgs": 0,
+        "active_cisd_levels": 0
+      }
+    },
+    "SBIN": {
+      "latest_close": 1034.6,
+      "trend_state": "bearish",
+      "latest_structure_events": [
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 809.45,
+          "start_bar_index": 24,
+          "bar_index": 35,
+          "status": "active",
+          "created_at": "2025-05-30T03:45:00",
+          "start_at": "2025-05-15T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 824.9,
+          "start_bar_index": 57,
+          "bar_index": 68,
+          "status": "active",
+          "created_at": "2025-07-16T03:45:00",
+          "start_at": "2025-07-01T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 838.0,
+          "start_bar_index": 90,
+          "bar_index": 111,
+          "status": "active",
+          "created_at": "2025-09-17T03:45:00",
+          "start_at": "2025-08-18T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 880.5,
+          "start_bar_index": 116,
+          "bar_index": 127,
+          "status": "active",
+          "created_at": "2025-10-10T03:45:00",
+          "start_at": "2025-09-24T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 999.0,
+          "start_bar_index": 158,
+          "bar_index": 185,
+          "status": "active",
+          "created_at": "2026-01-05T03:45:00",
+          "start_at": "2025-11-26T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 988.3,
+          "start_bar_index": 203,
+          "bar_index": 242,
+          "status": "active",
+          "created_at": "2026-03-30T03:45:00",
+          "start_at": "2026-02-01T03:45:00"
+        },
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 975.8,
+          "start_bar_index": 242,
+          "bar_index": 268,
+          "status": "active",
+          "created_at": "2026-05-11T03:45:00",
+          "start_at": "2026-03-30T03:45:00"
+        }
+      ],
+      "active_order_blocks": [
+        {
+          "type": "BULL_OB",
+          "direction": "bullish",
+          "top": 884.15,
+          "bottom": 872.1,
+          "start_bar_index": 129,
+          "end_bar_index": 155,
+          "bar_index": 130,
+          "status": "active",
+          "created_at": "2025-10-15T03:45:00",
+          "start_at": "2025-10-14T03:45:00"
+        }
+      ],
+      "active_fvgs": [],
+      "active_cisd_levels": [],
+      "counts": {
+        "structure": 7,
+        "active_order_blocks": 1,
+        "active_fvgs": 0,
+        "active_cisd_levels": 0
+      }
+    },
+    "LT": {
+      "latest_close": 4181.7,
+      "trend_state": "bullish",
+      "latest_structure_events": [
+        {
+          "type": "BOS_DOWN",
+          "direction": "bearish",
+          "level": 3485.9,
+          "start_bar_index": 45,
+          "bar_index": 69,
+          "status": "active",
+          "created_at": "2025-07-17T03:45:00",
+          "start_at": "2025-06-13T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 3685.3,
+          "start_bar_index": 78,
+          "bar_index": 87,
+          "status": "active",
+          "created_at": "2025-08-12T03:45:00",
+          "start_at": "2025-07-30T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 3531.0,
+          "start_bar_index": 96,
+          "bar_index": 104,
+          "status": "active",
+          "created_at": "2025-09-08T03:45:00",
+          "start_at": "2025-08-26T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 3727.9,
+          "start_bar_index": 87,
+          "bar_index": 118,
+          "status": "active",
+          "created_at": "2025-09-26T03:45:00",
+          "start_at": "2025-08-12T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 3794.9,
+          "start_bar_index": 118,
+          "bar_index": 130,
+          "status": "active",
+          "created_at": "2025-10-15T03:45:00",
+          "start_at": "2025-09-26T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 4062.6,
+          "start_bar_index": 140,
+          "bar_index": 159,
+          "status": "active",
+          "created_at": "2025-11-27T03:45:00",
+          "start_at": "2025-10-30T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 4114.0,
+          "start_bar_index": 170,
+          "bar_index": 183,
+          "status": "active",
+          "created_at": "2026-01-01T03:45:00",
+          "start_at": "2025-12-12T03:45:00"
+        },
+        {
+          "type": "BOS_UP",
+          "direction": "bullish",
+          "level": 4195.0,
+          "start_bar_index": 185,
+          "bar_index": 214,
+          "status": "active",
+          "created_at": "2026-02-16T03:45:00",
+          "start_at": "2026-01-05T03:45:00"
+        },
+        {
+          "type": "CHoCH_DOWN",
+          "direction": "bearish",
+          "level": 3720.1,
+          "start_bar_index": 198,
+          "bar_index": 231,
+          "status": "active",
+          "created_at": "2026-03-12T03:45:00",
+          "start_at": "2026-01-23T03:45:00"
+        },
+        {
+          "type": "CHoCH_UP",
+          "direction": "bullish",
+          "level": 4128.0,
+          "start_bar_index": 281,
+          "bar_index": 292,
+          "status": "active",
+          "created_at": "2026-06-15T03:45:00",
+          "start_at": "2026-05-29T03:45:00"
+        }
+      ],
+      "active_order_blocks": [],
+      "active_fvgs": [],
+      "active_cisd_levels": [
+        {
+          "type": "BULL_CISD",
+          "direction": "bullish",
+          "level": 3909.8,
+          "start_bar_index": 290,
+          "bar_index": 291,
+          "status": "active",
+          "created_at": "2026-06-12T03:45:00",
+          "start_at": "2026-06-11T03:45:00"
+        }
+      ],
+      "counts": {
+        "structure": 10,
+        "active_order_blocks": 0,
+        "active_fvgs": 0,
+        "active_cisd_levels": 1
+      }
+    }
+  },
+  "summary": {
+    "completed": [
+      "RELIANCE",
+      "TCS",
+      "HDFCBANK",
+      "INFY",
+      "ICICIBANK",
+      "SBIN",
+      "LT"
+    ],
+    "failed": []
+  }
+}
