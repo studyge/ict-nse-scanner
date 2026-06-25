@@ -51,6 +51,9 @@ export default function Home() {
   const positionPriceLinesRef = useRef([]);
 
   const [selectedSymbol, setSelectedSymbol] = useState("RELIANCE");
+  const [scannerData, setScannerData] = useState(null);
+  const [scannerError, setScannerError] = useState("");
+  const [scannerOpen, setScannerOpen] = useState(true);
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [replayStart, setReplayStart] = useState(null);
@@ -145,6 +148,35 @@ export default function Home() {
       console.warn("Could not save positions", err);
     }
   }, [positions]);
+
+  // Phase 15: load Pine-parity scanner data once.
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(`${BASE_PATH}/data/scanner_daily.json`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Scanner data unavailable (${response.status})`);
+        }
+        return response.json();
+      })
+      .then((json) => {
+        if (cancelled) return;
+        if (!Array.isArray(json.results)) {
+          throw new Error("Scanner data format is invalid");
+        }
+        setScannerData(json);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.warn("Scanner dashboard unavailable:", err);
+        setScannerError("Scanner data could not load.");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Load only the selected symbol JSON.
   useEffect(() => {
@@ -626,6 +658,29 @@ export default function Home() {
     setStatus(`Reset to selected replay candle #${replayStart + 1}.`);
   }
 
+  function shortDate(value) {
+    if (!value) return "—";
+    try {
+      return new Date(value).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short"
+      });
+    } catch (_) {
+      return "—";
+    }
+  }
+
+  function scannerZoneText(row) {
+    const direction = row?.latest_structure?.direction || "";
+
+    if (Number(row?.active_ob_count || 0) > 0) {
+      return direction === "bearish" ? "Bearish OB active" : "Bullish OB active";
+    }
+    if (Number(row?.active_fvg_count || 0) > 0) return "FVG active";
+    if (Number(row?.active_cisd_count || 0) > 0) return "CISD active";
+    return "No active zone";
+  }
+
   if (error) {
     return <main className="loading"><h1>Chart error</h1><p>{error}</p></main>;
   }
@@ -639,6 +694,88 @@ export default function Home() {
 
   return (
     <main className={themeName === "light" ? "app light" : "app"}>
+      <section className="scanner-panel">
+        <div className="scanner-panel-head">
+          <div>
+            <h2>Daily SMC Scanner</h2>
+            <p>Based on your SMC FINAL PRO Pine Script · local structure and active zones</p>
+          </div>
+
+          <button
+            type="button"
+            className="scanner-toggle"
+            onClick={() => setScannerOpen((value) => !value)}
+          >
+            {scannerOpen ? "Hide" : "Show"}
+          </button>
+        </div>
+
+        {scannerOpen && (
+          <>
+            {scannerError && <p className="scanner-error">{scannerError}</p>}
+
+            {!scannerData && !scannerError && (
+              <p className="scanner-loading">Loading scanner…</p>
+            )}
+
+            {scannerData?.results?.length > 0 && (
+              <div className="scanner-list">
+                {scannerData.results.map((row) => {
+                  const active = row.symbol === selectedSymbol;
+                  const structure = row.latest_structure;
+                  const structureText = structure?.type
+                    ? structure.type.replaceAll("_", " ")
+                    : "No structure";
+
+                  const biasClass = row.bias === "Bullish"
+                    ? "scanner-bull"
+                    : row.bias === "Bearish"
+                      ? "scanner-bear"
+                      : "scanner-neutral";
+
+                  return (
+                    <div
+                      className={active ? "scanner-row active" : "scanner-row"}
+                      key={row.symbol}
+                    >
+                      <div className="scanner-symbol">
+                        <strong>{row.symbol}</strong>
+                        <span>₹ {Number(row.close || 0).toFixed(2)}</span>
+                      </div>
+
+                      <div className="scanner-detail">
+                        <b className={biasClass}>
+                          {row.bias || "Neutral"} local structure
+                        </b>
+                        <span>{structureText} · {shortDate(structure?.created_at)}</span>
+                      </div>
+
+                      <div className="scanner-zone">
+                        <b>{scannerZoneText(row)}</b>
+                        <span>
+                          OB {row.active_ob_count || 0} · FVG {row.active_fvg_count || 0} · CISD {row.active_cisd_count || 0}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="scanner-open-chart"
+                        onClick={() => {
+                          setSelectedSymbol(row.symbol);
+                          setScannerOpen(false);
+                        }}
+                      >
+                        {active ? "Viewing" : "Open chart"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
       <header>
         <div>
           <h1>ICT NSE Chart</h1>

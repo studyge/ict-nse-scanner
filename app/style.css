@@ -276,3 +276,137 @@ button:active { transform: scale(0.97); }
   color: #0f172a;
   border-color: #94a3b8;
 }
+
+
+/* Phase 15 — Daily SMC Scanner */
+.scanner-panel {
+  margin: 0 0 16px;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  background: #0b1528;
+  overflow: hidden;
+}
+
+.scanner-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-bottom: 1px solid #23324a;
+}
+
+.scanner-panel h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.scanner-panel p {
+  margin: 4px 0 0;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.scanner-toggle,
+.scanner-open-chart {
+  border: 1px solid #475569;
+  border-radius: 8px;
+  background: #132039;
+  color: #e2e8f0;
+  padding: 8px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.scanner-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.scanner-row {
+  display: grid;
+  grid-template-columns: 100px minmax(145px, 1fr) minmax(135px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-top: 1px solid #1e293b;
+}
+
+.scanner-row:first-child {
+  border-top: 0;
+}
+
+.scanner-row.active {
+  background: rgba(20, 184, 166, 0.10);
+}
+
+.scanner-symbol,
+.scanner-detail,
+.scanner-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.scanner-symbol strong {
+  font-size: 14px;
+}
+
+.scanner-symbol span,
+.scanner-detail span,
+.scanner-zone span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.scanner-detail b,
+.scanner-zone b {
+  font-size: 12px;
+}
+
+.scanner-bull { color: #34d399; }
+.scanner-bear { color: #fb7185; }
+.scanner-neutral { color: #cbd5e1; }
+
+.scanner-loading,
+.scanner-error {
+  padding: 14px;
+}
+
+.scanner-error {
+  color: #fca5a5 !important;
+}
+
+.light .scanner-panel {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.light .scanner-panel-head,
+.light .scanner-row {
+  border-color: #e2e8f0;
+}
+
+.light .scanner-toggle,
+.light .scanner-open-chart {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+@media (max-width: 720px) {
+  .scanner-row {
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .scanner-detail,
+  .scanner-zone {
+    grid-column: 1 / -1;
+  }
+
+  .scanner-open-chart {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
