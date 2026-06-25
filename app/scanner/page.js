@@ -57,8 +57,38 @@ export default function ScannerPage() {
       })
       .catch((err) => {
         if (cancelled) return;
-        console.error(err);
-        setError("Scanner manifest could not load.");
+
+        console.warn("Manifest load failed, trying legacy scanner fallback:", err);
+
+        // Phase 18A fallback: old scanner_daily.json
+        fetch(`${BASE_PATH}/data/scanner_daily.json`)
+          .then((response) => {
+            if (!response.ok) throw new Error(`Legacy scanner unavailable (${response.status})`);
+            return response.json();
+          })
+          .then((legacy) => {
+            if (cancelled) return;
+            if (!Array.isArray(legacy.results)) throw new Error("Invalid legacy scanner data");
+
+            const fallbackManifest = {
+              timeframe: "1D",
+              total_symbols: legacy.results.length,
+              total_pages: 1,
+              pages: [{ page: 1, file: "legacy" }]
+            };
+
+            setManifest(fallbackManifest);
+            setPageData({
+              timeframe: "1D",
+              page: 1,
+              results: legacy.results
+            });
+          })
+          .catch((fallbackErr) => {
+            if (cancelled) return;
+            console.error("Legacy scanner fallback failed:", fallbackErr);
+            setError("Scanner data could not load. Refresh after GitHub Pages deployment is green.");
+          });
       });
 
     return () => {
@@ -68,6 +98,9 @@ export default function ScannerPage() {
 
   useEffect(() => {
     if (!manifest) return;
+
+    // Legacy fallback already has rows in memory.
+    if (manifest.pages?.[0]?.file === "legacy") return;
 
     let cancelled = false;
     setPageData(null);

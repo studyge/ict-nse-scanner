@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-25T00:33:02.032900+00:00",
+  "timeframe": "1D",
+  "page_size": 50,
+  "total_symbols": 7,
+  "total_pages": 1,
+  "pages": [
+    {
+      "page": 1,
+      "file": "scanner_page_001.json"
+    }
+  ],
+  "future_timeframes": [
+    "1D",
+    "4H",
+    "1H",
+    "15m",
+    "5m",
+    "3m",
+    "1m"
+  ]
+}
