@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "exchange": "NSE",
+  "description": "Phase 19 NSE scanner universe. Add symbols here later.",
+  "symbols": [
+    "RELIANCE",
+    "TCS",
+    "HDFCBANK",
+    "INFY",
+    "ICICIBANK",
+    "SBIN",
+    "LT"
+  ]
+}
