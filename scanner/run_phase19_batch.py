@@ -30,6 +30,7 @@ FINAL_DAILY = ROOT / "public" / "data" / "scanner_daily.json"
 
 # Existing Phase 14 runner candidates.
 RUNNER_CANDIDATES = [
+    ROOT / "scanner" / "run_phase14_pine_scanner.py",
     ROOT / "scanner" / "run_phase14_scanner.py",
     ROOT / "scanner" / "run_phase14a_scanner.py",
     ROOT / "scanner" / "run_phase14.py",
