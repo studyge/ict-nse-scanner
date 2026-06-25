@@ -410,3 +410,80 @@ button:active { transform: scale(0.97); }
     grid-row: 1;
   }
 }
+
+
+/* Phase 16 — Scanner filters and sorting */
+.scanner-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px 8px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.scanner-search,
+.scanner-select,
+.scanner-reset {
+  min-height: 36px;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  background: #132039;
+  color: #e2e8f0;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.scanner-search {
+  flex: 1 1 150px;
+  min-width: 130px;
+}
+
+.scanner-select {
+  flex: 1 1 130px;
+}
+
+.scanner-reset {
+  cursor: pointer;
+}
+
+.scanner-results-note {
+  padding: 8px 14px;
+  color: #94a3b8;
+  font-size: 11px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.scanner-empty {
+  padding: 18px 14px;
+  color: #94a3b8;
+  font-size: 13px;
+  text-align: center;
+}
+
+.light .scanner-toolbar,
+.light .scanner-results-note {
+  border-color: #e2e8f0;
+}
+
+.light .scanner-search,
+.light .scanner-select,
+.light .scanner-reset {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+@media (max-width: 720px) {
+  .scanner-toolbar {
+    padding: 10px;
+  }
+
+  .scanner-search,
+  .scanner-select {
+    flex: 1 1 calc(50% - 8px);
+  }
+
+  .scanner-reset {
+    flex: 1 1 100%;
+  }
+}

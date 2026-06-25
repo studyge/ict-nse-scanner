@@ -54,6 +54,10 @@ export default function Home() {
   const [scannerData, setScannerData] = useState(null);
   const [scannerError, setScannerError] = useState("");
   const [scannerOpen, setScannerOpen] = useState(true);
+  const [scannerSearch, setScannerSearch] = useState("");
+  const [scannerBiasFilter, setScannerBiasFilter] = useState("All");
+  const [scannerZoneFilter, setScannerZoneFilter] = useState("All");
+  const [scannerSort, setScannerSort] = useState("newest");
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [replayStart, setReplayStart] = useState(null);
@@ -658,6 +662,62 @@ export default function Home() {
     setStatus(`Reset to selected replay candle #${replayStart + 1}.`);
   }
 
+  function getFilteredScannerRows() {
+    const rows = Array.isArray(scannerData?.results)
+      ? [...scannerData.results]
+      : [];
+
+    const query = scannerSearch.trim().toUpperCase();
+
+    const filtered = rows.filter((row) => {
+      const symbol = String(row?.symbol || "").toUpperCase();
+      const bias = String(row?.bias || "Neutral");
+
+      const matchesSearch = !query || symbol.includes(query);
+      const matchesBias =
+        scannerBiasFilter === "All" || bias === scannerBiasFilter;
+
+      const obCount = Number(row?.active_ob_count || 0);
+      const cisdCount = Number(row?.active_cisd_count || 0);
+
+      const matchesZone =
+        scannerZoneFilter === "All" ||
+        (scannerZoneFilter === "OB" && obCount > 0) ||
+        (scannerZoneFilter === "CISD" && cisdCount > 0);
+
+      return matchesSearch && matchesBias && matchesZone;
+    });
+
+    filtered.sort((a, b) => {
+      if (scannerSort === "symbol") {
+        return String(a.symbol || "").localeCompare(String(b.symbol || ""));
+      }
+
+      if (scannerSort === "zones") {
+        const aZones =
+          Number(a.active_ob_count || 0) +
+          Number(a.active_fvg_count || 0) +
+          Number(a.active_cisd_count || 0);
+
+        const bZones =
+          Number(b.active_ob_count || 0) +
+          Number(b.active_fvg_count || 0) +
+          Number(b.active_cisd_count || 0);
+
+        if (bZones !== aZones) return bZones - aZones;
+        return String(a.symbol || "").localeCompare(String(b.symbol || ""));
+      }
+
+      const aTime = new Date(a?.latest_structure?.created_at || 0).getTime();
+      const bTime = new Date(b?.latest_structure?.created_at || 0).getTime();
+
+      if (bTime !== aTime) return bTime - aTime;
+      return String(a.symbol || "").localeCompare(String(b.symbol || ""));
+    });
+
+    return filtered;
+  }
+
   function shortDate(value) {
     if (!value) return "—";
     try {
@@ -719,8 +779,70 @@ export default function Home() {
             )}
 
             {scannerData?.results?.length > 0 && (
-              <div className="scanner-list">
-                {scannerData.results.map((row) => {
+              <>
+                <div className="scanner-toolbar">
+                  <input
+                    className="scanner-search"
+                    value={scannerSearch}
+                    onChange={(event) => setScannerSearch(event.target.value)}
+                    placeholder="Search symbol..."
+                    aria-label="Search scanner symbols"
+                  />
+
+                  <select
+                    className="scanner-select"
+                    value={scannerBiasFilter}
+                    onChange={(event) => setScannerBiasFilter(event.target.value)}
+                    aria-label="Filter local structure"
+                  >
+                    <option value="All">All structure</option>
+                    <option value="Bullish">Bullish</option>
+                    <option value="Bearish">Bearish</option>
+                    <option value="Neutral">Neutral</option>
+                  </select>
+
+                  <select
+                    className="scanner-select"
+                    value={scannerZoneFilter}
+                    onChange={(event) => setScannerZoneFilter(event.target.value)}
+                    aria-label="Filter active zones"
+                  >
+                    <option value="All">All zones</option>
+                    <option value="OB">Active OB only</option>
+                    <option value="CISD">Active CISD only</option>
+                  </select>
+
+                  <select
+                    className="scanner-select"
+                    value={scannerSort}
+                    onChange={(event) => setScannerSort(event.target.value)}
+                    aria-label="Sort scanner"
+                  >
+                    <option value="newest">Newest structure</option>
+                    <option value="zones">Most active zones</option>
+                    <option value="symbol">Symbol A–Z</option>
+                  </select>
+
+                  <button
+                    type="button"
+                    className="scanner-reset"
+                    onClick={() => {
+                      setScannerSearch("");
+                      setScannerBiasFilter("All");
+                      setScannerZoneFilter("All");
+                      setScannerSort("newest");
+                    }}
+                  >
+                    Reset
+                  </button>
+                </div>
+
+                <div className="scanner-results-note">
+                  {getFilteredScannerRows().length} of {scannerData.results.length} symbols
+                </div>
+
+                <div className="scanner-list">
+                {getFilteredScannerRows().map((row) => {
                   const active = row.symbol === selectedSymbol;
                   const structure = row.latest_structure;
                   const structureText = structure?.type
@@ -770,7 +892,14 @@ export default function Home() {
                     </div>
                   );
                 })}
-              </div>
+                </div>
+
+                {getFilteredScannerRows().length === 0 && (
+                  <div className="scanner-empty">
+                    No symbols match these filters.
+                  </div>
+                )}
+              </>
             )}
           </>
         )}
