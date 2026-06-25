@@ -23,3 +23,9 @@ dist/
 
 # OS/editor
 .DS_Store
+
+# Phase 18 scanner output must be published to GitHub Pages
+!public/data/scanner/
+!public/data/scanner/**/
+!public/data/scanner/**/*.json
+!public/data/scanner_daily.json
