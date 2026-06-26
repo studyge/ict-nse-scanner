@@ -3,27 +3,27 @@
   "timeframe": "1D",
   "page": 1,
   "page_size": 50,
-  "count": 7,
+  "count": 49,
   "results": [
     {
-      "symbol": "RELIANCE",
+      "symbol": "INFY",
       "exchange": "NSE",
       "interval": "1D",
-      "close": 1318.1,
+      "close": 1041.2,
       "bias": "Bearish",
-      "score": 60,
-      "label": "B",
+      "score": 85,
+      "label": "A",
       "latest_structure": {
-        "type": "CHoCH_DOWN",
+        "type": "BOS_DOWN",
         "direction": "bearish",
-        "level": 1312.6,
-        "start_bar_index": 274,
-        "bar_index": 284,
+        "level": 1153.6,
+        "start_bar_index": 280,
+        "bar_index": 288,
         "status": "active"
       },
       "active_fvg_count": 0,
-      "active_ob_count": 0,
-      "active_cisd_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 2,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -44,6 +44,31 @@
         "level": 2206.4,
         "start_bar_index": 270,
         "bar_index": 285,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "LT",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 4216.4,
+      "bias": "Bullish",
+      "score": 70,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 4128.0,
+        "start_bar_index": 280,
+        "bar_index": 291,
         "status": "active"
       },
       "active_fvg_count": 0,
@@ -81,24 +106,24 @@
       }
     },
     {
-      "symbol": "INFY",
+      "symbol": "RELIANCE",
       "exchange": "NSE",
       "interval": "1D",
-      "close": 1041.2,
+      "close": 1318.1,
       "bias": "Bearish",
-      "score": 85,
-      "label": "A",
+      "score": 60,
+      "label": "B",
       "latest_structure": {
-        "type": "BOS_DOWN",
+        "type": "CHoCH_DOWN",
         "direction": "bearish",
-        "level": 1153.6,
-        "start_bar_index": 280,
-        "bar_index": 288,
+        "level": 1312.6,
+        "start_bar_index": 274,
+        "bar_index": 284,
         "status": "active"
       },
       "active_fvg_count": 0,
-      "active_ob_count": 1,
-      "active_cisd_count": 2,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -106,24 +131,24 @@
       }
     },
     {
-      "symbol": "ICICIBANK",
+      "symbol": "BHARTIARTL",
       "exchange": "NSE",
       "interval": "1D",
-      "close": 1387.5,
+      "close": 1850.7,
       "bias": "Bullish",
-      "score": 60,
+      "score": 70,
       "label": "B",
       "latest_structure": {
         "type": "CHoCH_UP",
         "direction": "bullish",
-        "level": 1301.8,
-        "start_bar_index": 278,
-        "bar_index": 289,
+        "level": 1906.0,
+        "start_bar_index": 261,
+        "bar_index": 272,
         "status": "active"
       },
       "active_fvg_count": 0,
       "active_ob_count": 0,
-      "active_cisd_count": 0,
+      "active_cisd_count": 1,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -156,19 +181,1044 @@
       }
     },
     {
-      "symbol": "LT",
+      "symbol": "ICICIBANK",
       "exchange": "NSE",
       "interval": "1D",
-      "close": 4216.4,
+      "close": 1387.5,
       "bias": "Bullish",
-      "score": 70,
+      "score": 60,
       "label": "B",
       "latest_structure": {
         "type": "CHoCH_UP",
         "direction": "bullish",
-        "level": 4128.0,
+        "level": 1301.8,
+        "start_bar_index": 278,
+        "bar_index": 289,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "ITC",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 290.0,
+      "bias": "Bearish",
+      "score": 75,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 300.1,
+        "start_bar_index": 268,
+        "bar_index": 279,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "HINDUNILVR",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 2174.2,
+      "bias": "Bearish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 2211.6,
+        "start_bar_index": 261,
+        "bar_index": 274,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "KOTAKBANK",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 409.0,
+      "bias": "Bullish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 395.15,
+        "start_bar_index": 277,
+        "bar_index": 290,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "AXISBANK",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1377.2,
+      "bias": "Bullish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 1317.0,
+        "start_bar_index": 278,
+        "bar_index": 289,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 980.4,
+      "bias": "Bearish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 889.0,
+        "start_bar_index": 270,
+        "bar_index": 282,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "BAJAJFINSV",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1764.6,
+      "bias": "Bearish",
+      "score": 75,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 1693.8,
+        "start_bar_index": 272,
+        "bar_index": 286,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "SUNPHARMA",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1862.8,
+      "bias": "Bullish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 1819.0,
+        "start_bar_index": 240,
+        "bar_index": 262,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "MARUTI",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 13745.0,
+      "bias": "Bullish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 13508.0,
         "start_bar_index": 280,
         "bar_index": 291,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "TITAN",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 4291.3,
+      "bias": "Bullish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 4352.2,
+        "start_bar_index": 221,
+        "bar_index": 246,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "ULTRACEMCO",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 11489.0,
+      "bias": "Bearish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 11484.0,
+        "start_bar_index": 261,
+        "bar_index": 273,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "ASIANPAINT",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 2645.2,
+      "bias": "Bullish",
+      "score": 75,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 2582.0,
+        "start_bar_index": 254,
+        "bar_index": 266,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "NESTLEIND",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1402.6,
+      "bias": "Bullish",
+      "score": 95,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 1334.8,
+        "start_bar_index": 220,
+        "bar_index": 254,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "WIPRO",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 175.0,
+      "bias": "Bearish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 187.0,
+        "start_bar_index": 270,
+        "bar_index": 286,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 2,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "HCLTECH",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1100.7,
+      "bias": "Bearish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 1297.7,
+        "start_bar_index": 233,
+        "bar_index": 255,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 2,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "TECHM",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1437.1,
+      "bias": "Bullish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 1506.8,
+        "start_bar_index": 273,
+        "bar_index": 281,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "TATAMOTORS",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 353.2,
+      "bias": "Bullish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 367.95,
+        "start_bar_index": 255,
+        "bar_index": 277,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "M&M",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 3182.2,
+      "bias": "Bullish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 3167.0,
+        "start_bar_index": 291,
+        "bar_index": 299,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "TATASTEEL",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 188.71,
+      "bias": "Bearish",
+      "score": 95,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 203.04,
+        "start_bar_index": 274,
+        "bar_index": 286,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "JSWSTEEL",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1231.0,
+      "bias": "Bearish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 1252.5,
+        "start_bar_index": 288,
+        "bar_index": 297,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "HINDALCO",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 953.2,
+      "bias": "Bearish",
+      "score": 95,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 1022.1,
+        "start_bar_index": 267,
+        "bar_index": 290,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 2,
+      "active_cisd_count": 2,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "ADANIENT",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 3038.0,
+      "bias": "Bullish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 3059.8,
+        "start_bar_index": 285,
+        "bar_index": 298,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "ADANIPORTS",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1796.0,
+      "bias": "Bullish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 1823.9,
+        "start_bar_index": 271,
+        "bar_index": 279,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "POWERGRID",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 283.9,
+      "bias": "Bearish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 290.2,
+        "start_bar_index": 272,
+        "bar_index": 281,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "NTPC",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 352.05,
+      "bias": "Bearish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 352.0,
+        "start_bar_index": 243,
+        "bar_index": 288,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "ONGC",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 233.1,
+      "bias": "Bearish",
+      "score": 95,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 277.65,
+        "start_bar_index": 267,
+        "bar_index": 279,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "COALINDIA",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 435.4,
+      "bias": "Bearish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 439.65,
+        "start_bar_index": 290,
+        "bar_index": 299,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "BPCL",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 309.75,
+      "bias": "Bullish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 312.0,
+        "start_bar_index": 280,
+        "bar_index": 292,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "CIPLA",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1440.1,
+      "bias": "Bearish",
+      "score": 95,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 1354.0,
+        "start_bar_index": 284,
+        "bar_index": 293,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 2,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "DRREDDY",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1350.5,
+      "bias": "Bullish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 1346.8,
+        "start_bar_index": 279,
+        "bar_index": 299,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "APOLLOHOSP",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 8592.0,
+      "bias": "Bullish",
+      "score": 75,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 8443.0,
+        "start_bar_index": 277,
+        "bar_index": 287,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "INDUSINDBK",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 918.95,
+      "bias": "Bullish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 940.2,
+        "start_bar_index": 280,
+        "bar_index": 295,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "DIVISLAB",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 6713.5,
+      "bias": "Bullish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 6564.5,
+        "start_bar_index": 221,
+        "bar_index": 262,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "EICHERMOT",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 7598.0,
+      "bias": "Bullish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 7441.0,
+        "start_bar_index": 278,
+        "bar_index": 291,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "GRASIM",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 3126.6,
+      "bias": "Bullish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 3007.3,
+        "start_bar_index": 267,
+        "bar_index": 275,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "BRITANNIA",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 5237.0,
+      "bias": "Bearish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 5279.5,
+        "start_bar_index": 269,
+        "bar_index": 280,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "HEROMOTOCO",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 4896.1,
+      "bias": "Bearish",
+      "score": 75,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 4880.0,
+        "start_bar_index": 270,
+        "bar_index": 281,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "SBILIFE",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1744.9,
+      "bias": "Bearish",
+      "score": 70,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 1759.0,
+        "start_bar_index": 258,
+        "bar_index": 288,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 2,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "HDFCLIFE",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 585.45,
+      "bias": "Bearish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 594.05,
+        "start_bar_index": 272,
+        "bar_index": 281,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "TATACONSUM",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1131.3,
+      "bias": "Bearish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 1135.6,
+        "start_bar_index": 265,
+        "bar_index": 285,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "TRENT",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 3216.2,
+      "bias": "Bullish",
+      "score": 85,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 2908.00001454,
+        "start_bar_index": 277,
+        "bar_index": 293,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 2,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "SHRIRAMFIN",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1031.8,
+      "bias": "Bearish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 901.3,
+        "start_bar_index": 270,
+        "bar_index": 286,
         "status": "active"
       },
       "active_fvg_count": 0,
