@@ -1,82 +1,7 @@
 {
-  "generated_at": "2026-06-26T09:43:49.830020+00:00",
+  "generated_at": "2026-06-26T09:58:29.678535+00:00",
   "timeframe": "1D",
   "results": [
-    {
-      "symbol": "INFY",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 1041.2,
-      "bias": "Bearish",
-      "score": 85,
-      "label": "A",
-      "latest_structure": {
-        "type": "BOS_DOWN",
-        "direction": "bearish",
-        "level": 1153.6,
-        "start_bar_index": 280,
-        "bar_index": 288,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 1,
-      "active_cisd_count": 2,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "TCS",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 2094.7,
-      "bias": "Bearish",
-      "score": 60,
-      "label": "B",
-      "latest_structure": {
-        "type": "BOS_DOWN",
-        "direction": "bearish",
-        "level": 2206.4,
-        "start_bar_index": 270,
-        "bar_index": 285,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 0,
-      "active_cisd_count": 1,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "LT",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 4216.4,
-      "bias": "Bullish",
-      "score": 70,
-      "label": "B",
-      "latest_structure": {
-        "type": "CHoCH_UP",
-        "direction": "bullish",
-        "level": 4128.0,
-        "start_bar_index": 280,
-        "bar_index": 291,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 0,
-      "active_cisd_count": 1,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
     {
       "symbol": "HDFCBANK",
       "exchange": "NSE",
@@ -128,24 +53,24 @@
       }
     },
     {
-      "symbol": "BHARTIARTL",
+      "symbol": "INFY",
       "exchange": "NSE",
       "interval": "1D",
-      "close": 1850.7,
-      "bias": "Bullish",
-      "score": 70,
-      "label": "B",
+      "close": 1041.2,
+      "bias": "Bearish",
+      "score": 85,
+      "label": "A",
       "latest_structure": {
-        "type": "CHoCH_UP",
-        "direction": "bullish",
-        "level": 1906.0,
-        "start_bar_index": 261,
-        "bar_index": 272,
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 1153.6,
+        "start_bar_index": 280,
+        "bar_index": 288,
         "status": "active"
       },
       "active_fvg_count": 0,
-      "active_ob_count": 0,
-      "active_cisd_count": 1,
+      "active_ob_count": 1,
+      "active_cisd_count": 2,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -153,24 +78,24 @@
       }
     },
     {
-      "symbol": "SBIN",
+      "symbol": "TCS",
       "exchange": "NSE",
       "interval": "1D",
-      "close": 1045.4,
+      "close": 2094.7,
       "bias": "Bearish",
-      "score": 75,
-      "label": "A",
+      "score": 60,
+      "label": "B",
       "latest_structure": {
         "type": "BOS_DOWN",
         "direction": "bearish",
-        "level": 975.8,
-        "start_bar_index": 241,
-        "bar_index": 267,
+        "level": 2206.4,
+        "start_bar_index": 270,
+        "bar_index": 285,
         "status": "active"
       },
       "active_fvg_count": 0,
-      "active_ob_count": 1,
-      "active_cisd_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -203,24 +128,74 @@
       }
     },
     {
-      "symbol": "ITC",
+      "symbol": "SBIN",
       "exchange": "NSE",
       "interval": "1D",
-      "close": 290.0,
+      "close": 1045.4,
       "bias": "Bearish",
       "score": 75,
       "label": "A",
       "latest_structure": {
         "type": "BOS_DOWN",
         "direction": "bearish",
-        "level": 300.1,
-        "start_bar_index": 268,
-        "bar_index": 279,
+        "level": 975.8,
+        "start_bar_index": 241,
+        "bar_index": 267,
         "status": "active"
       },
       "active_fvg_count": 0,
       "active_ob_count": 1,
       "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "LT",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 4216.4,
+      "bias": "Bullish",
+      "score": 70,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 4128.0,
+        "start_bar_index": 280,
+        "bar_index": 291,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1850.7,
+      "bias": "Bullish",
+      "score": 70,
+      "label": "B",
+      "latest_structure": {
+        "type": "CHoCH_UP",
+        "direction": "bullish",
+        "level": 1906.0,
+        "start_bar_index": 261,
+        "bar_index": 272,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -246,31 +221,6 @@
       "active_fvg_count": 0,
       "active_ob_count": 0,
       "active_cisd_count": 1,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "KOTAKBANK",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 409.0,
-      "bias": "Bullish",
-      "score": 50,
-      "label": "Watch",
-      "latest_structure": {
-        "type": "BOS_UP",
-        "direction": "bullish",
-        "level": 395.15,
-        "start_bar_index": 277,
-        "bar_index": 290,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 0,
-      "active_cisd_count": 0,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -328,6 +278,56 @@
       }
     },
     {
+      "symbol": "ITC",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 290.0,
+      "bias": "Bearish",
+      "score": 75,
+      "label": "A",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 300.1,
+        "start_bar_index": 268,
+        "bar_index": 279,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "KOTAKBANK",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 409.0,
+      "bias": "Bullish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 395.15,
+        "start_bar_index": 277,
+        "bar_index": 290,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
       "symbol": "BAJAJFINSV",
       "exchange": "NSE",
       "interval": "1D",
@@ -345,31 +345,6 @@
       },
       "active_fvg_count": 0,
       "active_ob_count": 1,
-      "active_cisd_count": 0,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "SUNPHARMA",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 1862.8,
-      "bias": "Bullish",
-      "score": 50,
-      "label": "Watch",
-      "latest_structure": {
-        "type": "BOS_UP",
-        "direction": "bullish",
-        "level": 1819.0,
-        "start_bar_index": 240,
-        "bar_index": 262,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 0,
       "active_cisd_count": 0,
       "pine_settings": {
         "swing_length": 7,
@@ -421,6 +396,31 @@
       "active_fvg_count": 0,
       "active_ob_count": 1,
       "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
+      "symbol": "SUNPHARMA",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1862.8,
+      "bias": "Bullish",
+      "score": 50,
+      "label": "Watch",
+      "latest_structure": {
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 1819.0,
+        "start_bar_index": 240,
+        "bar_index": 262,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -878,24 +878,24 @@
       }
     },
     {
-      "symbol": "CIPLA",
+      "symbol": "INDUSINDBK",
       "exchange": "NSE",
       "interval": "1D",
-      "close": 1440.1,
-      "bias": "Bearish",
-      "score": 95,
-      "label": "A",
+      "close": 918.95,
+      "bias": "Bullish",
+      "score": 50,
+      "label": "Watch",
       "latest_structure": {
-        "type": "CHoCH_DOWN",
-        "direction": "bearish",
-        "level": 1354.0,
-        "start_bar_index": 284,
-        "bar_index": 293,
+        "type": "BOS_UP",
+        "direction": "bullish",
+        "level": 940.2,
+        "start_bar_index": 280,
+        "bar_index": 295,
         "status": "active"
       },
       "active_fvg_count": 0,
-      "active_ob_count": 1,
-      "active_cisd_count": 2,
+      "active_ob_count": 0,
+      "active_cisd_count": 0,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
@@ -928,6 +928,31 @@
       }
     },
     {
+      "symbol": "CIPLA",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1440.1,
+      "bias": "Bearish",
+      "score": 95,
+      "label": "A",
+      "latest_structure": {
+        "type": "CHoCH_DOWN",
+        "direction": "bearish",
+        "level": 1354.0,
+        "start_bar_index": 284,
+        "bar_index": 293,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 1,
+      "active_cisd_count": 2,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
       "symbol": "APOLLOHOSP",
       "exchange": "NSE",
       "interval": "1D",
@@ -945,31 +970,6 @@
       },
       "active_fvg_count": 0,
       "active_ob_count": 1,
-      "active_cisd_count": 0,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "INDUSINDBK",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 918.95,
-      "bias": "Bullish",
-      "score": 50,
-      "label": "Watch",
-      "latest_structure": {
-        "type": "BOS_UP",
-        "direction": "bullish",
-        "level": 940.2,
-        "start_bar_index": 280,
-        "bar_index": 295,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 0,
       "active_cisd_count": 0,
       "pine_settings": {
         "swing_length": 7,
@@ -1128,6 +1128,31 @@
       }
     },
     {
+      "symbol": "SHRIRAMFIN",
+      "exchange": "NSE",
+      "interval": "1D",
+      "close": 1031.8,
+      "bias": "Bearish",
+      "score": 60,
+      "label": "B",
+      "latest_structure": {
+        "type": "BOS_DOWN",
+        "direction": "bearish",
+        "level": 901.3,
+        "start_bar_index": 270,
+        "bar_index": 286,
+        "status": "active"
+      },
+      "active_fvg_count": 0,
+      "active_ob_count": 0,
+      "active_cisd_count": 1,
+      "pine_settings": {
+        "swing_length": 7,
+        "min_gap": 10,
+        "fvg_extend": 20
+      }
+    },
+    {
       "symbol": "HDFCLIFE",
       "exchange": "NSE",
       "interval": "1D",
@@ -1196,31 +1221,6 @@
       "active_fvg_count": 0,
       "active_ob_count": 1,
       "active_cisd_count": 2,
-      "pine_settings": {
-        "swing_length": 7,
-        "min_gap": 10,
-        "fvg_extend": 20
-      }
-    },
-    {
-      "symbol": "SHRIRAMFIN",
-      "exchange": "NSE",
-      "interval": "1D",
-      "close": 1031.8,
-      "bias": "Bearish",
-      "score": 60,
-      "label": "B",
-      "latest_structure": {
-        "type": "BOS_DOWN",
-        "direction": "bearish",
-        "level": 901.3,
-        "start_bar_index": 270,
-        "bar_index": 286,
-        "status": "active"
-      },
-      "active_fvg_count": 0,
-      "active_ob_count": 0,
-      "active_cisd_count": 1,
       "pine_settings": {
         "swing_length": 7,
         "min_gap": 10,
