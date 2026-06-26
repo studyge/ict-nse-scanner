@@ -15,15 +15,29 @@ import os
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = ROOT / "data" / "raw"
-OUT_DIR = ROOT / "data" / "processed"
+PUBLIC_DIR = ROOT / "public" / "data"
 
 RAW_DIR.mkdir(parents=True, exist_ok=True)
-OUT_DIR.mkdir(parents=True, exist_ok=True)
+PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
 
 SYMBOL = os.getenv("ICT_SYMBOL", "RELIANCE")
-EXCHANGE = "NSE"
-INTERVAL = "daily"
-BARS = 300
+EXCHANGE = os.getenv("ICT_EXCHANGE", "NSE")
+
+TIMEFRAME = os.getenv("ICT_TIMEFRAME", "1D").upper()
+
+INTERVAL_MAP = {
+    "1D":"daily",
+    "4H":"4h",
+    "1H":"1h",
+    "15M":"15m",
+    "5M":"5m",
+    "3M":"3m",
+    "1M":"1m",
+}
+
+INTERVAL = INTERVAL_MAP.get(TIMEFRAME, "daily")
+
+BARS = int(os.getenv("ICT_BARS", "300"))
 
 print("=" * 68)
 print("ICT NSE SCANNER — PHASE 6: CHART DATA EXPORT")
@@ -87,7 +101,15 @@ chart = export_chart_data(
     order_blocks=order_blocks,
 )
 
-output_file = OUT_DIR / f"{SYMBOL}_{INTERVAL}_chart.json"
+output_name = f"NSE_{SYMBOL}_{TIMEFRAME}.json"
+output_file = PUBLIC_DIR / output_name
+
+chart.setdefault("meta", {})
+chart["meta"]["symbol"] = SYMBOL
+chart["meta"]["exchange"] = EXCHANGE
+chart["meta"]["timeframe"] = TIMEFRAME
+chart["meta"]["backend"] = "Backend v2.1"
+
 output_file.write_text(json.dumps(chart, indent=2))
 
 print("\n5/5 Summary")
@@ -107,4 +129,17 @@ summary = {
 
 print(json.dumps(summary, indent=2))
 print(f"\n✓ Saved chart file: {output_file}")
+
 print("✓ This file is ready for the future TradingView-like web chart.")
+
+print("\nEXPORT_RESULT")
+
+print(json.dumps({
+    "success": True,
+    "symbol": SYMBOL,
+    "exchange": EXCHANGE,
+    "timeframe": TIMEFRAME,
+    "chart_file": str(output_file),
+    "candles": len(candles)
+}))
+
